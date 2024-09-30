@@ -1,0 +1,11 @@
+.special {
+    font-style: italic;
+    font-weight: bold;
+    color: rgb(147, 230, 230);
+}
+.modern {
+    background: rgb(100, 100, 100);
+}
+p {
+    font-size: 24pt;
+}
