@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Art Generator</title>
+    <title>Emoji Identifier</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto&display=swap" rel="stylesheet">
     <style>
@@ -26,18 +26,21 @@
 
 <body>
     <div class="container">
-        <h1 class="text-center mt-5">Word Art Generator Demo</h1>
+        <h1 class="text-center mt-5" style="color:rgb(211, 211, 0)">[: EMOJI IDENTIFIER :]</h1>
+        <P class="text-center mt-5" style="color:rgb(211, 211, 0)"> This is a database to associate Emojis to emotions!!</P>
+        <p>Choose your emoji!</p>
         <form id="wordArtForm" class="mt-4">
             <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" class="form-control" placeholder="Enter your name">
+                <label for="EMOJI">EMOJI:</label>
+                <input type="text" id="name" class="form-control" placeholder="Icon goes here!">
             </div>
             <div class="form-group">
-                <label for="message">Message:</label>
-                <textarea id="message" class="form-control" placeholder="Enter your message"></textarea>
+                <label for="Emotion">EMOTION:</label>
+                <textarea id="message" class="form-control" placeholder="Describe your emoji!"></textarea>
             </div>
+            <p>What characteristics should your emoji's description have?</p>
             <div class="form-group">
-                <label for="fontStyle">Font Style:</label>
+                <label for="fontStyle">FONT:</label>
                 <select id="fontStyle" class="form-control">
                     <option value="Arial">Arial</option>
                     <option value="Times New Roman">Times New Roman</option>
@@ -85,8 +88,8 @@
         form.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const name = document.getElementById('name').value;
-            const message = document.getElementById('message').value;
+            const emoji = document.getElementById('Emoji').value;
+            const emotionLabel = document.getElementById('Emotion label').value;
             const fontStyle = document.getElementById('fontStyle').value;
             const fontSize = document.getElementById('fontSize').value + 'px';
             const textColor = document.getElementById('textColor').value;
