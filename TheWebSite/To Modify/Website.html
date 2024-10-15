@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<!--General resources other than class material used:
+    - W3 schools for documentation
+    - Stack Overflow for specific questions or troubleshooting
+    - CART 263 Web building playlist - Pippin Barr: 
+    - Claude Dev addon for VSCode if really stuck
+-->
+<html>
+
+<head>
+    <title>THE WEB SITE</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    
+    <!-- BOOTLEG AS HELL CSS INTEGRATION
+    Flexbox idea given by Claude, all the resources I used are listed below --
+    Flexbox overview: https://www.youtube.com/watch?v=K74l26pE4YA
+    W3 schools flexbox tutorial: https://www.w3schools.com/csS/css3_flexbox.asp
+     -->
+    <span class="auto-type"></span>
+    <style>
+        body {
+            display: flex;
+            /*Using flexbox layout for the page*/
+            min-height: 100vh;
+            /*setting height to full (100%) viewport of given device*/
+            font-family: 'Courier New', monospace;
+            /* setting page font, fancy text*/
+
+
+        }
+
+        .left-column,
+        .right-column {
+            width: 50%;
+            /* Divide page into 2 equal columns*/
+            padding: 20px;
+            /* Adds space inside the columns */
+            display: flex;
+            /* apply flex property to contents */
+            flex-direction: column;
+            /*Vertial column formatting*/
+            justify-content: center;
+            /* Centers content vertically */
+        }
+    </style>
+</head>
+
+<body style="background-color:black">
+    <div class="left-column">
+        <h1 style="text-align: left; color: white;" class="display-1"><span style="font-weight:normal"> <span
+                    class="auto-type">THE WEB</span>
+            </span></h1>
+        <h4 style="text-align: left; color: white;"><span style="font-weight:normal">Just an itsy-bitsy spider
+                building
+                a web...site</span>
+        </h4>
+    </div>
+    <div class="right-column">
+        <div style="text-align:center;">
+            <img src="NewSpider.gif" alt="visual" width=" 700" height="700">
+        </div>
+    </div>
+</body>
+
+</html>

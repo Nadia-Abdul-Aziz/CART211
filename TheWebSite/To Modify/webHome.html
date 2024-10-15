@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>THE WEB SITE</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <!--I have no idea what I wrote...but they work, stack overflow is my lord and saviour-->
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            background-color: black;
+            color: white;
+        }
+
+        .left-column,
+        .right-column {
+            width: 50%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 80px;
+        }
+
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 36px;
+            color: white;
+        }
+
+        .dropdown {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+
+        .dropdown-toggle::after {
+            display: none;
+        }
+
+        .dropdown-menu {
+            background-color: black;
+            border: 1px solid white;
+        }
+
+        .dropdown-item {
+            color: white;
+        }
+
+        #dropdownMenuButton {
+            background-color: black;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4);
+        }
+
+        #menuIcon {
+            font-size: 24px;
+            color: white;
+        }
+
+        .rotate {
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+
+<body>
+    <!--Hyperlink back to home, image is spider from placeholder gif-->
+    <a href="webHome.html" class="home-icon">
+        <img src="homeIcon.png" width="65" height="65">
+    </a>
+
+    <div class="dropdown">
+        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="fas fa-bars" id="menuIcon"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="#">Intro: TBA</a></li>
+            <li><a class="dropdown-item" href="Bug1.html">Episode 1: The Bug</a></li>
+            <li><a class="dropdown-item" href="#">Episode 2: TBA</a></li>
+            <li><a class="dropdown-item" href="#">Episode 3: TBA</a></li>
+            <li><a class="dropdown-item" href="#">Outro: TBA</a></li>
+        </ul>
+    </div>
+
+    <div class="left-column">
+        <h1 id="typed-title" style="text-align: left;" class="display-1"></h1>
+        <h4 id="typed-subtitle" style="text-align: left;"></h4>
+    </div>
+    <div class="right-column">
+        <div style="text-align:center;">
+            <img src="NewSpider.gif" alt="visual" width="700" height="700">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Typed('#typed-title', {
+                strings: ['THE WEB'],
+                typeSpeed: 100,
+                showCursor: false,
+                onComplete: function () {
+                    new Typed('#typed-subtitle', {
+                        strings: ['Just the adventures of Houston the itsy-bitsy spider building a web...site.'],
+                        typeSpeed: 50,
+                        showCursor: false
+                    });
+                }
+            });
+
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const menuIcon = document.getElementById('menuIcon');
+
+            dropdownToggle.addEventListener('click', function () {
+                this.classList.toggle('rotate');
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!dropdownToggle.contains(event.target)) {
+                    dropdownToggle.classList.remove('rotate');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
