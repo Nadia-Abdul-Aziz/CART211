@@ -1,73 +1,115 @@
 <!DOCTYPE html>
 <html>
+<!--Lots of comments because I will literally forget what all this is tomorrow...goldfish brain-->
+<!--CLAUDE USES:
+    - Formatting of multiple box-shadow properties
+    - Plain javascript general guidance
+    - 
+-->
 
 <head>
     <title>THE WEB SITE</title>
 
+    <!--Bootstrap, Typed.js and P5.js-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 
     <style>
+        /*NADIA THIS IS BOOTSTRAP PLEASE DONT PANIC*/
+
+        /*Overall formatting to make my life easier*/
         body {
-            display: flex;
-            min-height: 100vh;
-            font-family: 'Courier New', monospace;
             background-color: black;
+            /*Self explanatory*/
+            display: flex;
+            /*Using flexbox to divide page in half*/
+            font-family: 'Courier New', monospace;
+            /*Fancy font*/
             color: white;
+            /*For text*/
         }
 
+        /*Making the division*/
         .left-column,
         .right-column {
             width: 50%;
+            /*each column = half of page*/
             padding: 20px;
+            /*padding inside column*/
             display: flex;
+            /*use flexbox again inside*/
             flex-direction: column;
+            /*stacking items vertically*/
             justify-content: center;
+            /*vertically centering the things*/
             margin-left: 80px;
+            /*Adding a damn margin on the left side because it looked even worse before NADIA PLZ DO NOT REMOVE*/
         }
 
+        /*top left icon to go back to homepage*/
         .home-icon {
             position: fixed;
+            /*so it stays in place relative to viewport*/
             top: 20px;
+            /*spot relative to viewport*/
             left: 20px;
-            font-size: 36px;
-            color: white;
+            /*Same thing*/
         }
 
+        /*Same as previous section but for the dropdown menu icon*/
         .dropdown {
             position: fixed;
             top: 20px;
             right: 20px;
         }
 
+        /*Removing that bootstrap arrow thingy I hated*/
         .dropdown-toggle::after {
             display: none;
+            /*BE GONE USELESS THING I HATE YOU*/
         }
 
+        /*Dropdown menu options container, when button is clicked*/
         .dropdown-menu {
             background-color: black;
+            /*Black container*/
             border: 1px solid white;
+            /*Outline of black container*/
         }
 
+        /*Options inside dropdown menu*/
         .dropdown-item {
             color: white;
+            /*Text color*/
         }
 
+        /*Dropdown menu shape*/
         #dropdownMenuButton {
             background-color: black;
+            /*Black square*/
             width: 54px;
+            /*size*/
             height: 54px;
+            /*more size*/
             border: none;
+            /*no border*/
             padding: 15px;
+            /*Extra wiggle room*/
             border-radius: 10px;
+            /*OOooooo fancy rounded corners*/
+            /*Glow effect - CLAUDE USED FOR FORMAT HELP!!!!!*/
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4);
         }
+
+        /* I don't remember why I put this so it is now a comment until it proves itself useful I guess
 
         #menuIconCanvas {
             display: block;
         }
+        */
 
+        /*Rotation for the dropdown hamburger*/
         .rotate {
             transform: rotate(90deg);
         }
@@ -75,11 +117,12 @@
 </head>
 
 <body>
-    <a href="webHome.html" class="home-icon">
-        <img src="homeIcon.png" width="65" height="65">
+    <!--Turning the spider icon into a hyperlink-->
+    <a href="webHome.html" class="home-icon"> <!--Link to itself + style above-->
+        <img src="homeIcon.png" width="65" height="65"> <!--Placeholder Image-->
     </a>
 
-    <div class="dropdown">
+    <div class="dropdown"> <!--Container for dropdown menu-->
         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
             aria-expanded="false">
             <div id="menuIconCanvas"></div>
@@ -99,7 +142,7 @@
     </div>
     <div class="right-column">
         <div style="text-align:center;">
-            <img src="NewSpider.gif" alt="visual" width="700" height="700">
+            <img src="newSpider.gif" alt="visual" width="700" height="700">
         </div>
     </div>
 
@@ -125,14 +168,15 @@
                 this.classList.toggle('rotate');
             });
 
+            //Another conditional for click out
             document.addEventListener('click', function (event) {
-                if (!dropdownToggle.contains(event.target)) {
-                    dropdownToggle.classList.remove('rotate');
+                if (!dropdownToggle.contains(event.target)) { // Checking if click is outside the menu
+                    dropdownToggle.classList.remove('rotate'); // Deactivating the rotation thus closing the menu
                 }
             });
         });
 
-        // p5.js sketch for menu icon (global mode)
+        // p5.js hamburger, I know what this is
         function setup() {
             let canvas = createCanvas(24, 24);
             canvas.parent('menuIconCanvas');
