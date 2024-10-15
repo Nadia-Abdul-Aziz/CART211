@@ -14,20 +14,34 @@
  */
 
 "use strict";
+//Variables for images
+let flyImg;
+
+let houstonImg;
+
+let webImg;
+
+//Loading images
+function preload() {
+    flyImg = loadImage('assets/images/Bug.png');
+    houstonImg = loadImage('assets/images/homeIcon.png');
+    webImg = loadImage('assets/images/webShoot.png');
+}
 
 // Our frog
 const frog = {
     // The frog's body has a position and size
     body: {
         x: 320,
-        y: 520,
+        y: 450,
         size: 150
     },
     // The frog's tongue has a position, size, speed, and state
     tongue: {
         x: undefined,
         y: 480,
-        size: 20,
+        size: 1,
+        tipSize: 100,
         speed: 20,
         // Determines how the tongue moves each frame
         state: "idle" // State can be: idle, outbound, inbound
@@ -39,8 +53,8 @@ const frog = {
 const fly = {
     x: 0,
     y: 200, // Will be random
-    size: 10,
-    speed: 3
+    size: 50,
+    speed: 6
 };
 
 /**
@@ -54,7 +68,7 @@ function setup() {
 }
 
 function draw() {
-    background("#87ceeb");
+    background("black");
     moveFly();
     drawFly();
     moveFrog();
@@ -80,11 +94,7 @@ function moveFly() {
  * Draws the fly as a black circle
  */
 function drawFly() {
-    push();
-    noStroke();
-    fill("#000000");
-    ellipse(fly.x, fly.y, fly.size);
-    pop();
+    image(flyImg, fly.x, fly.y, fly.size, fly.size);
 }
 
 /**
@@ -134,25 +144,23 @@ function moveTongue() {
  * Displays the tongue (tip and line connection) and the frog (body)
  */
 function drawFrog() {
-    // Draw the tongue tip
-    push();
-    fill("#ff0000");
-    noStroke();
-    ellipse(frog.tongue.x, frog.tongue.y, frog.tongue.size);
-    pop();
 
     // Draw the rest of the tongue
     push();
-    stroke("#ff0000");
+    stroke("white");
     strokeWeight(frog.tongue.size);
     line(frog.tongue.x, frog.tongue.y, frog.body.x, frog.body.y);
     pop();
 
+    imageMode(CENTER);
+    image(webImg, frog.tongue.x, frog.tongue.y, frog.tongue.tipSize, frog.tongue.tipSize);
+
     // Draw the frog's body
     push();
-    fill("#00ff00");
-    noStroke();
-    ellipse(frog.body.x, frog.body.y, frog.body.size);
+    translate(frog.body.x, frog.body.y);
+    rotate(PI);
+    imageMode(CENTER);
+    image(houstonImg, 0, 0, frog.body.size, frog.body.size);
     pop();
 }
 
@@ -163,7 +171,7 @@ function checkTongueFlyOverlap() {
     // Get distance from tongue to fly
     const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
     // Check if it's an overlap
-    const eaten = (d < frog.tongue.size/2 + fly.size/2);
+    const eaten = (d < frog.tongue.size / 2 + fly.size / 2);
     if (eaten) {
         // Reset the fly
         resetFly();
