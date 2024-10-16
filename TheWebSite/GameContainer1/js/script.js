@@ -174,7 +174,7 @@ function drawBug() {
 }
 
 function resetBug() {
-    if (bug.speed >= 5) {
+    if (bug.speed >= 7) {
         gameState = BOSS_FIGHT;
     }
     bug.x = 0;
