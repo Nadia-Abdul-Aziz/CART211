@@ -1,115 +1,45 @@
-/**
- * Houston's Bug Adventure
- * 
- * A game of catching bugs with his web
- * 
- * Instructions:
- * - Move Houston with left and right arrow keys
- * - Press spacebar to launch the web
- * - Catch bugs
- * - Once you reach a certain speed, you must face the final bug boss
- * 
- * Made with p5.js
- * https://p5js.org/
- */
-"use strict";
-// Variables for images
-let bugImg;
-let houstonImg;
-let webImg;
-
-// Game states
-const GAME_PLAYING = 'playing';
-const GAME_OVER = 'game over';
-const BOSS_FIGHT = 'boss fight';
-
-// Current game state
-let gameState = GAME_PLAYING;
-
-// For typed.js
-let typed;
+let player, boss;
+let playerBullets = [];
+let bossBullets = [];
+let playerHealth = 100;
+let bossHealth = 100;
+let gameState = 'playing';
 let gameOverInitialized = false;
 let gameWonInitialized = false;
 
-// Houston
-const spider = {
-    body: {
-        x: 320,
-        y: 450,
-        size: 150,
-        speed: 10
-    },
-    web: {
-        x: undefined,
-        y: 480,
-        size: 1,
-        tipSize: 100,
-        speed: 20,
-        state: "idle"
-    }
-};
-
-// Bugs
-const bug = {
-    x: 0,
-    y: 200,
-    size: 50,
-    speed: 1,
-    yRange: 100,
-};
-
-// Mine
-const mine = {
-    x: 0,
-    y: 200,
-    size: 10,
-    speed: 7,
-    collisionRadius: 20
-};
-
-function preload() {
-    bugImg = loadImage('assets/images/Bug.png');
-    houstonImg = loadImage('assets/images/homeIcon.png');
-    webImg = loadImage('assets/images/webShoot.png');
-}
-
 function setup() {
     createCanvas(640, 480);
-    resetBug();
-    resetMine();
-    resetWeb();
-
+    player = {
+        x: width / 2,
+        y: height - 50,
+        size: 50
+    };
+    boss = {
+        x: width / 2,
+        y: 100,
+        size: 100
+    };
 }
 
 function draw() {
-    background("black");
+    background(0);
     drawBorder();
 
     switch (gameState) {
-        case GAME_PLAYING:
-            moveBug();
-            moveMine(); // New: Move the mine
-            drawBug();
-            drawMine(); // New: Draw the mine
-            moveSpider();
-            moveWeb();
-            drawSpider();
-            checkWebBugOverlap();
-            checkWebMineOverlap(); // New: Check for web-mine collision
-            checkLoss();
+        case 'playing':
+            updateGame();
             break;
-        case GAME_OVER:
+        case 'lose':
             if (!gameOverInitialized) {
                 initializeGameOver();
                 gameOverInitialized = true;
             }
             break;
-        case BOSS_FIGHT:
+        case 'win':
             if (!gameWonInitialized) {
                 initializeGameWon();
                 gameWonInitialized = true;
             }
-            drawSpider();
             break;
     }
 }
@@ -117,144 +47,93 @@ function draw() {
 function drawBorder() {
     push();
     noFill();
-    stroke(255); // Grey color
-    strokeWeight(5); // Border thickness
+    stroke(255);
+    strokeWeight(5);
     rect(0, 0, width, height);
     pop();
 }
 
-// New: Mine-related functions
-function moveMine() {
-    mine.x += mine.speed;
-    if (mine.x > width) {
-        resetMine();
-    }
-}
+function updateGame() {
+    // Move player
+    if (keyIsDown(LEFT_ARROW)) player.x -= 10;
+    if (keyIsDown(RIGHT_ARROW)) player.x += 10;
+    player.x = constrain(player.x, player.size / 2, width - player.size / 2);
 
-function drawMine() {
+    // Draw player
     push();
-    noStroke();
-    fill("white");
-    ellipse(mine.x, mine.y, mine.size);
-    pop();
-}
-
-function resetMine() {
-    mine.x = 0;
-    mine.y = random(0, 300);
-}
-
-function checkWebMineOverlap() {
-    // Calculate the distance between the web and the mine
-    const distance = dist(spider.web.x, spider.web.y, mine.x, mine.y);
-
-    // Define a collision threshold (adjust as needed)
-    const collisionThreshold = (spider.web.size + mine.collisionRadius) / 2;
-
-    // Check if the distance is less than the collision threshold
-    if (distance < collisionThreshold) {
-        console.log("Mine collision detected! Changing game state to GAME_OVER");
-        gameState = GAME_OVER;
-    }
-}
-
-// Existing functions (unchanged)
-function moveBug() {
-    bug.x += bug.speed;
-    bug.y += random(-10, 10);
-    const startY = bug.y;
-    bug.y = constrain(bug.y, startY - bug.yRange, startY + bug.yRange);
-    if (bug.x > width) {
-        gameState = GAME_OVER;
-    }
-}
-
-function drawBug() {
-    image(bugImg, bug.x, bug.y, bug.size, bug.size);
-}
-
-function resetBug() {
-    if (bug.speed >= 7) {
-        gameState = BOSS_FIGHT;
-    }
-    bug.x = 0;
-    bug.y = random(bug.yRange, height - bug.yRange);
-    bug.speed += 0.5;
-}
-
-function moveSpider() {
-    if (keyIsDown(LEFT_ARROW)) {
-        spider.body.x -= spider.body.speed;
-    }
-    if (keyIsDown(RIGHT_ARROW)) {
-        spider.body.x += spider.body.speed;
-    }
-    spider.body.x = constrain(spider.body.x, 0, width);
-}
-
-function moveWeb() {
-    spider.web.x = spider.body.x;
-    if (spider.web.state === "idle") {
-        // Do nothing
-    } else if (spider.web.state === "outbound") {
-        spider.web.y += -spider.web.speed;
-        if (spider.web.y <= 0) {
-            spider.web.state = "inbound";
-        }
-    } else if (spider.web.state === "inbound") {
-        spider.web.y += spider.web.speed;
-        if (spider.web.y >= height) {
-            spider.web.state = "idle";
-        }
-    }
-}
-
-function resetWeb() {
-    spider.web.x = spider.body.x;
-    spider.web.y = spider.body.y;
-    spider.web.state = "idle";
-}
-
-function drawSpider() {
-    push();
-    stroke("white");
-    strokeWeight(spider.web.size);
-    line(spider.web.x, spider.web.y, spider.body.x, spider.body.y);
-    pop();
-
-    imageMode(CENTER);
-    image(webImg, spider.web.x, spider.web.y, spider.web.tipSize, spider.web.tipSize);
-
-    push();
-    translate(spider.body.x, spider.body.y);
+    translate(player.x, player.y);
     rotate(PI);
     imageMode(CENTER);
-    image(houstonImg, 0, 0, spider.body.size, spider.body.size);
+    fill(0, 255, 0);
+    triangle(0, -player.size / 2, -player.size / 2, player.size / 2, player.size / 2, player.size / 2);
     pop();
-}
 
-function checkWebBugOverlap() {
-    const d = dist(spider.web.x, spider.web.y, bug.x, bug.y);
-    const caught = (d < spider.web.size / 2 + bug.size / 2);
-    if (caught) {
-        resetBug();
-        spider.web.state = "inbound";
+    // Draw boss
+    fill(255, 0, 0);
+    ellipse(boss.x, boss.y, boss.size);
+
+    // Update and draw player bullets
+    for (let i = playerBullets.length - 1; i >= 0; i--) {
+        playerBullets[i].y -= 20;
+        fill(255);
+        ellipse(playerBullets[i].x, playerBullets[i].y, 10, 10);
+
+        // Check for collision with boss
+        if (dist(playerBullets[i].x, playerBullets[i].y, boss.x, boss.y) < boss.size / 2) {
+            bossHealth -= 5;
+            playerBullets.splice(i, 1);
+        }
+
+        // Remove bullets that go off screen
+        if (playerBullets[i] && playerBullets[i].y < 0) {
+            playerBullets.splice(i, 1);
+        }
+    }
+
+    // Boss shoots every 60 frames
+    if (frameCount % 60 === 0) {
+        bossBullets.push({ x: boss.x, y: boss.y });
+    }
+
+    // Update and draw boss bullets
+    for (let i = bossBullets.length - 1; i >= 0; i--) {
+        bossBullets[i].y += 7;
+        fill(255, 0, 0);
+        ellipse(bossBullets[i].x, bossBullets[i].y, 10, 10);
+
+        // Check for collision with player
+        if (dist(bossBullets[i].x, bossBullets[i].y, player.x, player.y) < player.size / 2) {
+            playerHealth -= 10;
+            bossBullets.splice(i, 1);
+        }
+
+        // Remove bullets that go off screen
+        if (bossBullets[i] && bossBullets[i].y > height) {
+            bossBullets.splice(i, 1);
+        }
+    }
+
+    // Display health
+    textFont('Courier New');
+    textSize(20);
+    fill(255);
+    text(`Player Health: ${playerHealth}`, 10, 30);
+    text(`Boss Health: ${bossHealth}`, 10, 60);
+
+    // Check for game over
+    if (playerHealth <= 0) {
+        gameState = 'lose';
+    } else if (bossHealth <= 0) {
+        gameState = 'win';
     }
 }
 
 function keyPressed() {
-    if (keyCode === 32) { // 32 is the keyCode for spacebar
-        if (gameState === GAME_PLAYING && spider.web.state === "idle") {
-            spider.web.state = "outbound";
-        } else if (gameState === GAME_OVER) {
-            resetGame();
-        }
+    if (key === ' ' && gameState === 'playing') {
+        playerBullets.push({ x: player.x, y: player.y - player.size / 2 });
     }
-}
-
-function checkLoss() {
-    if (bug.x >= width) {
-        gameState = GAME_OVER;
+    if (key === 'r' && (gameState === 'lose' || gameState === 'win')) {
+        resetGame();
     }
 }
 
@@ -296,8 +175,8 @@ function initializeGameOver() {
         onComplete: () => {
             new Typed(typedElement.elt, {
                 strings: [
-                    'the bugs have escaped...',
-                    'never to be found again...'
+                    'the boss has defeated you...',
+                    'the bugs will overrun the world...'
                 ],
                 typeSpeed: 40,
                 backSpeed: 30,
@@ -306,7 +185,7 @@ function initializeGameOver() {
                 showCursor: false,
                 onComplete: () => {
                     new Typed(restartPrompt.elt, {
-                        strings: ['Press the spacebar to restart'],
+                        strings: ['Press R to restart'],
                         typeSpeed: 40,
                         showCursor: true,
                         onComplete: (self) => {
@@ -348,12 +227,10 @@ function initializeGameWon() {
     playAgainButton.style('margin-top', '20px');
     playAgainButton.style('padding', '10px 20px');
     playAgainButton.style('cursor', 'pointer');
-    playAgainButton.mousePressed(() => {
-        window.location.href = 'game.html'; // Replace 'game.html' with your desired HTML file
-    });
+    playAgainButton.mousePressed(resetGame);
 
     new Typed(gameWonTitle.elt, {
-        strings: ['HOUSTON HAS DEFEATED ALL THE LOWLY BUGS!!'],
+        strings: ['YOU HAVE DEFEATED THE BOSS BUG!'],
         typeSpeed: 20,
         showCursor: false,
         onComplete: () => {
@@ -362,28 +239,23 @@ function initializeGameWon() {
     });
 }
 
-function resetGameOver() {
-    if (typed) {
-        typed.destroy();
-    }
-    gameOverInitialized = false;
-    removeElements();
-}
-
-function resetGameWon() {
-    if (typed) {
-        typed.destroy();
-    }
-    gameWonInitialized = false;
-    removeElements();
-}
-
 function resetGame() {
-    resetGameOver();
-    resetGameWon();
-    gameState = GAME_PLAYING;
-    bug.speed = 1;
-    resetBug();
-    resetMine(); // New: Reset mine position when restarting the game
-    reserWeb();
+    removeElements();
+    player = {
+        x: width / 2,
+        y: height - 50,
+        size: 50
+    };
+    boss = {
+        x: width / 2,
+        y: 100,
+        size: 100
+    };
+    playerHealth = 100;
+    bossHealth = 100;
+    playerBullets = [];
+    bossBullets = [];
+    gameState = 'playing';
+    gameOverInitialized = false;
+    gameWonInitialized = false;
 }
