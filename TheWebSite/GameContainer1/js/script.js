@@ -319,7 +319,6 @@ function initializeGameOver() {
         }
     });
 }
-
 function initializeGameWon() {
     let gameWonElement = createDiv('');
     gameWonElement.position(0, 0);
@@ -349,7 +348,7 @@ function initializeGameWon() {
     playAgainButton.style('padding', '10px 20px');
     playAgainButton.style('cursor', 'pointer');
     playAgainButton.mousePressed(() => {
-        window.location.href = 'game.html'; // Replace 'game.html' with your desired HTML file
+        window.location.href = 'bossFight.html'; // Load the boss fight HTML file
     });
 
     new Typed(gameWonTitle.elt, {
