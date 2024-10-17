@@ -2,50 +2,155 @@
 <html>
 
 <head>
-    <title>The Bug</title>
+    <title>THE WEB SITE</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            font-family: 'Courier New', monospace;
+            color: white;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .full-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left-column,
+        .right-column {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #initial-text {
+            font-size: 2.5rem;
+            text-align: center;
+        }
+
+        #typed-subtitle {
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        #image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* Hide overflowing content during slide */
+        }
+
+        #white-square {
+            width: 300px;
+            height: 300px;
+            background-color: white;
+            transform: translateX(-100%);
+            transition: transform 1s ease-in-out;
+        }
+
+        #white-square.slide-in {
+            transform: translateX(0);
+        }
+
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        #next-button {
+            margin-top: 20px;
+            display: none;
+        }
+
+        #next-button a {
+            color: white;
+            text-decoration: none;
+            border: 1px solid white;
+            padding: 10px 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #next-button a:hover {
+            background-color: white;
+            color: black;
+        }
+    </style>
 </head>
 
-<style>
-    .img_deg {
-        float: right;
-    }
-</style>
-
 <body>
+    <a href="webHome.html" class="home-icon">
+        <img src="assets/images/homeIcon.png" width="65" height="65" alt="Home">
+    </a>
 
-    <div style="text-align:center;">
-        <h1>LECTURE NOTES</h1>
+    <div class="full-screen">
+        <div id="initial-text"></div>
     </div>
-    <h3><u>WEEK 1 (THIS WEEK!)</u></h3>
-    <em>Santorini and the user experience:</em>
-    <img class="img_deg" src="5229-pepe-graduate.png" alt="visual" width="600" height="600">
-    <ul>
-        <li> As students walked into the classroom, on screen was a audiovisual presentation of Santorini, Greece</li>
-        <li>All sensory inputs contribute to ther experience of the consumer, including students in a classroom</li>
-        <li>The calming music and video, relaxes the audience</li>
-        <li>The video significantly altered the student's mood, thus altering their experience of the class</li>
-        <li>Likewise, the presentation of any website serves the same purpose</li>
-    </ul>
-    <em>Internet outreach:</em>
-    <ul>
-        <li>Most of the world is likely disabled without the use of internet resources, it therefore serves an integral
-            purpose</li>
-        <li>It has changed culture, by automating human experiences</li>
-        <li>It may have altered said human experiences in a beneficial manner, such as the observable improved
-            accessibility</li>
-        <li><em>This user is smashing keys on their keyboard....they will surely finish soon</em></li><img
-            src="grey-9026_256.gif" alt="visual" width=" 30" height="30">
-    </ul>
-    <em>Can we change the world?:</em>
-    <ul>
-        <li><em>This user is smashing keys on their keyboard....they will surely finish soon</em></li><img
-            src="grey-9026_256.gif" alt="visual" width=" 30" height="30">
-    </ul>
-    <em>5 minute university:</em>
-    <ul>
-        <li><em>This user is smashing keys on their keyboard....they will surely finish soon</em></li> <img
-            src="grey-9026_256.gif" alt="visual" width=" 30" height="30">
-    </ul>
+
+    <div class="left-column">
+        <div id="image-container">
+            <div id="white-square"></div>
+        </div>
+    </div>
+    <div class="right-column">
+        <div id="typed-subtitle"></div>
+        <div id="next-button">
+            <a href="Bug2.html">Next</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const initialText = new Typed('#initial-text', {
+                strings: ['On this fine day in October...', ''],
+                typeSpeed: 50,
+                backSpeed: 30,
+                showCursor: false,
+                onComplete: function () {
+                    setTimeout(() => {
+                        document.querySelector('.full-screen').style.display = 'none';
+                        document.querySelector('.left-column').style.display = 'flex';
+                        document.querySelector('.right-column').style.display = 'flex';
+
+                        // Trigger the white square slide-in
+                        setTimeout(() => {
+                            document.getElementById('white-square').classList.add('slide-in');
+                        }, 100);
+
+                        new Typed('#typed-subtitle', {
+                            strings: ['Houston happily continues building his web...'],
+                            typeSpeed: 50,
+                            showCursor: false,
+                            onComplete: function () {
+                                document.getElementById('next-button').style.display = 'block';
+                            }
+                        });
+                    }, 500);
+                }
+            });
+
+            document.querySelector('.left-column').style.display = 'none';
+            document.querySelector('.right-column').style.display = 'none';
+        });
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+    <title>The Bug</title>
+
+    <!-- Library script(s) -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        #content-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #square-container {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            top: -100vh;
+            transition: top 1s ease-in-out;
+            margin-bottom: 40px;
+        }
+
+        #white-square {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+        }
+
+        #text-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #typed-text,
+        #typed-text-2 {
+            font-size: 1.5rem;
+        }
+
+        #next-button {
+            display: none;
+        }
+
+        #next-button a {
+            color: white;
+            text-decoration: none;
+            border: 1px solid white;
+            padding: 10px 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #next-button a:hover {
+            background-color: white;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="webHome.html" class="home-icon">
+        <img src="assets/images/homeIcon.png" width="65" height="65" alt="Home">
+    </a>
+
+    <div id="content-container">
+        <div id="square-container">
+            <div id="white-square"></div>
+        </div>
+        <div id="text-container">
+            <div id="typed-text"></div>
+            <div id="typed-text-2"></div>
+        </div>
+        <div id="next-button">
+            <a href="Bug3.html">Next</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Drop the white square
+            setTimeout(() => {
+                document.getElementById('square-container').style.top = '0';
+            }, 500);
+
+            // Start the first typing animation after the square drops
+            setTimeout(() => {
+                new Typed('#typed-text', {
+                    strings: ['When he caught a whiff of something tasty...'],
+                    typeSpeed: 50,
+                    showCursor: false,
+                    onComplete: function () {
+                        // Start the second typing animation
+                        setTimeout(() => {
+                            new Typed('#typed-text-2', {
+                                strings: ['very tasty...'],
+                                typeSpeed: 50,
+                                showCursor: false,
+                                onComplete: function () {
+                                    // Show the button after both animations are complete
+                                    document.getElementById('next-button').style.display = 'block';
+                                }
+                            });
+                        }, 500);
+                    }
+                });
+            }, 1500);
+        });
+    </script>
+</body>
+
+</html>

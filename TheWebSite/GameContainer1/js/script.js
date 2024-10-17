@@ -348,7 +348,7 @@ function initializeGameWon() {
     playAgainButton.style('padding', '10px 20px');
     playAgainButton.style('cursor', 'pointer');
     playAgainButton.mousePressed(() => {
-        window.location.href = 'bossFight.html'; // Load the boss fight HTML file
+        window.location.href = 'Boss1.html'; // Load the boss fight HTML file
     });
 
     new Typed(gameWonTitle.elt, {
