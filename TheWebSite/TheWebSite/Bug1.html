@@ -35,7 +35,6 @@
             justify-content: center;
             align-items: center;
             padding: 0 20px;
-            /* Add padding to prevent text from sticking to the edge */
         }
 
         #initial-text {
@@ -55,6 +54,26 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+        }
+
+        #image-container img {
+            opacity: 0;
+            transform: translateX(-100%);
+            animation: slideIn 1.5s ease-out forwards;
+            max-width: 100%;
+            height: auto;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         #white-square {
@@ -107,7 +126,7 @@
 
     <div class="left-column">
         <div id="image-container">
-            <img src="assets/images/SpiderWeb.png">
+            <img src="assets/images/SpiderWeb.png" alt="Spider Web">
         </div>
     </div>
     <div class="right-column">
@@ -130,11 +149,6 @@
                         document.querySelector('.full-screen').style.display = 'none';
                         document.querySelector('.left-column').style.display = 'flex';
                         document.querySelector('.right-column').style.display = 'flex';
-
-                        // Trigger the white square slide-in
-                        setTimeout(() => {
-                            document.getElementById('white-square').classList.add('slide-in');
-                        }, 100);
 
                         new Typed('#typed-subtitle', {
                             strings: ['...a tantalizing aroma drifted through the air.'],
