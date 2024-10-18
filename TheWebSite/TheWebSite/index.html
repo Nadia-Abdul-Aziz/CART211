@@ -102,16 +102,38 @@
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4);
         }
 
-        /* I don't remember why I put this so it is now a comment until it proves itself useful I guess
-
-        #menuIconCanvas {
-            display: block;
-        }
-        */
-
         /*Rotation for the dropdown hamburger*/
         .rotate {
             transform: rotate(90deg);
+        }
+
+        /* Updated style for the button */
+        .custom-button {
+            background-color: black;
+            color: white;
+            border: 1px solid white;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            opacity: 0;
+            /* Start with the button invisible */
+            transition: opacity 0.5s ease;
+            /* Smooth transition for opacity */
+        }
+
+        .custom-button:hover {
+            background-color: white;
+            color: black;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Updated style for button container */
+        .button-container {
+            text-align: left;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -131,7 +153,6 @@
             <li><a class="dropdown-item" href="#">Intro: TBA</a></li>
             <li><a class="dropdown-item" href="Bug1.html">Episode 1: The Bug</a></li>
             <li><a class="dropdown-item" href="#">Episode 2: TBA</a></li>
-            <li><a class="dropdown-item" href="#">Episode 3: TBA</a></li>
             <li><a class="dropdown-item" href="#">Outro: TBA</a></li>
         </ul>
     </div>
@@ -139,6 +160,10 @@
     <div class="left-column">
         <h1 id="typed-title" style="text-align: left;" class="display-1"></h1>
         <h4 id="typed-subtitle" style="text-align: left;"></h4>
+        <!-- Updated button placement -->
+        <div class="button-container">
+            <a href="Bug1.html" class="custom-button" id="nextButton">Start Here</a>
+        </div>
     </div>
     <div class="right-column">
         <div style="text-align:center;">
@@ -157,7 +182,11 @@
                     new Typed('#typed-subtitle', {
                         strings: ['Just the adventures of Houston the itsy-bitsy spider building a web...site.'],
                         typeSpeed: 50,
-                        showCursor: false
+                        showCursor: false,
+                        onComplete: function () {
+                            // Show the button after subtitle animation is complete
+                            document.getElementById('nextButton').style.opacity = '1';
+                        }
                     });
                 }
             });

@@ -1,6 +1,7 @@
 let player, boss;
 let playerBullets = [];
 let bossBullets = [];
+let mine;
 let playerHealth = 100;
 let bossHealth = 100;
 let gameState = 'playing';
@@ -27,6 +28,8 @@ function setup() {
         y: 100,
         size: 400
     };
+    // Initialize single mine
+    spawnMine();
 }
 
 function draw() {
@@ -67,6 +70,11 @@ function updateGame() {
     if (keyIsDown(RIGHT_ARROW)) player.x += 10;
     player.x = constrain(player.x, player.size / 2, width - player.size / 2);
 
+    // Update and draw mine
+    updateMine();
+    drawMine();
+    checkMineCollision();
+
     // Draw player
     push();
     translate(player.x, player.y);
@@ -96,6 +104,7 @@ function updateGame() {
         if (dist(playerBullets[i].x, playerBullets[i].y, boss.x, boss.y) < boss.size / 2) {
             bossHealth -= 5;
             playerBullets.splice(i, 1);
+            continue;
         }
 
         // Remove bullets that go off screen
@@ -104,15 +113,16 @@ function updateGame() {
         }
     }
 
-    // Boss shoots every 60 frames
-    if (frameCount % 60 === 0) {
-        bossBullets.push({ x: boss.x, y: boss.y });
+    // Boss shoots randomly
+    if (random() < 0.03) { // 3% chance every frame
+        let bulletX = random(boss.x - boss.size / 6, boss.x + boss.size / 6);
+        bossBullets.push({ x: bulletX, y: boss.y + boss.size / 4 });
     }
 
     // Update and draw boss bullets
     for (let i = bossBullets.length - 1; i >= 0; i--) {
         bossBullets[i].y += 7;
-        fill(255, 0, 0);
+        fill(255);
         ellipse(bossBullets[i].x, bossBullets[i].y, 10, 10);
 
         // Check for collision with player
@@ -132,6 +142,41 @@ function updateGame() {
         gameState = 'lose';
     } else if (bossHealth <= 0) {
         gameState = 'win';
+    }
+}
+
+function spawnMine() {
+    mine = {
+        x: random(width),
+        y: 0,
+        size: 10,
+        speed: random(4, 8), // Increased speed range
+        collisionRadius: 20
+    };
+}
+
+function updateMine() {
+    mine.y += mine.speed;
+    if (mine.y > height) {
+        spawnMine();
+    }
+}
+
+function drawMine() {
+    push();
+    noStroke();
+    fill("red");
+    ellipse(mine.x, mine.y, mine.size);
+    pop();
+}
+
+function checkMineCollision() {
+    // Calculate the distance between the mine and the player
+    const distance = dist(mine.x, mine.y, player.x, player.y);
+
+    // Check if the distance is less than the collision threshold
+    if (distance < mine.collisionRadius + player.size / 2) {
+        gameState = 'lose';
     }
 }
 
@@ -175,11 +220,12 @@ function drawVerticalHealthBars() {
 }
 
 function keyPressed() {
-    if (key === ' ' && gameState === 'playing') {
-        playerBullets.push({ x: player.x, y: player.y - player.size / 2 });
-    }
-    if (key === 'r' && (gameState === 'lose' || gameState === 'win')) {
-        resetGame();
+    if (key === ' ') {
+        if (gameState === 'playing') {
+            playerBullets.push({ x: player.x, y: player.y - player.size / 2 });
+        } else if (gameState === 'lose') {
+            resetGame();
+        }
     }
 }
 
@@ -221,8 +267,8 @@ function initializeGameOver() {
         onComplete: () => {
             new Typed(typedElement.elt, {
                 strings: [
-                    'the boss has defeated you...',
-                    'the bugs will overrun the world...'
+                    'Unfortunately for poor little Houston...',
+                    '...Bugzilla reigned too high on the food chain'
                 ],
                 typeSpeed: 40,
                 backSpeed: 30,
@@ -231,7 +277,7 @@ function initializeGameOver() {
                 showCursor: false,
                 onComplete: () => {
                     new Typed(restartPrompt.elt, {
-                        strings: ['Press R to restart'],
+                        strings: ['Press the SPACEBAR to restart'],
                         typeSpeed: 40,
                         showCursor: true,
                         onComplete: (self) => {
@@ -261,39 +307,33 @@ function initializeGameWon() {
     gameWonElement.style('top', '0');
     gameWonElement.style('left', '0');
 
-    let gameWonTitle = createDiv('');
-    gameWonTitle.parent(gameWonElement);
-    gameWonTitle.style('font-size', '20px');
-    gameWonTitle.style('margin-bottom', '20px');
-
-    let playAgainButton = createButton('Play Again');
-    let continueButton = createButton('Continue to Next Level');
-
-    playAgainButton.parent(gameWonElement);
-    continueButton.parent(gameWonElement);
-
-    [playAgainButton, continueButton].forEach(button => {
-        button.style('font-size', '20px');
-        button.style('font-family', 'Courier New');
-        button.style('margin-top', '20px');
-        button.style('margin-right', '10px');
-        button.style('padding', '10px 20px');
-        button.style('cursor', 'pointer');
-    });
-
-    playAgainButton.mousePressed(resetGame);
-    continueButton.mousePressed(() => {
-        console.log('Moving to next level or ending game');
-    });
-
-    new Typed(gameWonTitle.elt, {
-        strings: ['YOU HAVE DEFEATED THE BOSS BUG!'],
-        typeSpeed: 20,
-        showCursor: false,
-        onComplete: () => {
-            playAgainButton.style('display', 'inline-block');
-            continueButton.style('display', 'inline-block');
+    // CSS ANIMATION !!!!
+    let style = createElement('style');
+    style.html(`
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
         }
+        .flash-text {
+            animation: flash 0.7s infinite;
+            font-size: 30px;
+        }
+    `);
+
+    let gameWonTitle = createDiv('WINNER WINNER BUG DINNER!');
+    gameWonTitle.parent(gameWonElement);
+    gameWonTitle.class('flash-text');
+
+    let continueButton = createButton('Continue');
+    continueButton.parent(gameWonElement);
+    continueButton.style('font-size', '20px');
+    continueButton.style('font-family', 'Courier New');
+    continueButton.style('margin-top', '20px');
+    continueButton.style('padding', '10px 20px');
+    continueButton.style('cursor', 'pointer');
+    continueButton.mousePressed(() => {
+        window.location.href = 'Winner.html';
     });
 }
 
@@ -302,13 +342,15 @@ function resetGame() {
     player = {
         x: width / 2,
         y: height - 50,
-        size: 50
+        size: 100
     };
     boss = {
         x: width / 2,
         y: 100,
-        size: 100
+        size: 400
     };
+    // Reset mine
+    spawnMine();
     playerHealth = 100;
     bossHealth = 100;
     playerBullets = [];

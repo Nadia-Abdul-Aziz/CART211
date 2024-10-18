@@ -64,7 +64,7 @@ const mine = {
     y: 200,
     size: 10,
     speed: 7,
-    collisionRadius: 20
+    collisionRadius: 30
 };
 
 function preload() {
@@ -296,8 +296,8 @@ function initializeGameOver() {
         onComplete: () => {
             new Typed(typedElement.elt, {
                 strings: [
-                    'the bugs have escaped...',
-                    'never to be found again...'
+                    'The Bugs Have Escaped...',
+                    'Houston Will Forever Yearn for His Lost Nourishment...'
                 ],
                 typeSpeed: 40,
                 backSpeed: 30,
@@ -306,7 +306,7 @@ function initializeGameOver() {
                 showCursor: false,
                 onComplete: () => {
                     new Typed(restartPrompt.elt, {
-                        strings: ['Press the spacebar to restart'],
+                        strings: ['Press the SPACEBAR to restart'],
                         typeSpeed: 40,
                         showCursor: true,
                         onComplete: (self) => {
@@ -352,7 +352,7 @@ function initializeGameWon() {
     });
 
     new Typed(gameWonTitle.elt, {
-        strings: ['HOUSTON HAS DEFEATED ALL THE LOWLY BUGS!!'],
+        strings: ['Houston Has Eaten All the Tiny Critters!'],
         typeSpeed: 20,
         showCursor: false,
         onComplete: () => {
