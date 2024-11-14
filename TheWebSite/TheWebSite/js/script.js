@@ -164,9 +164,6 @@ function moveBug() {
     bug.y += random(-10, 10);
     const startY = bug.y;
     bug.y = constrain(bug.y, startY - bug.yRange, startY + bug.yRange);
-    if (bug.x > width) {
-        gameState = GAME_OVER;
-    }
 }
 
 function drawBug() {
