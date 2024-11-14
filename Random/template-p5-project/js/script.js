@@ -22,7 +22,9 @@ let mainText = "Click to generate a car name.";
  * Load the car and dinosaur data
  */
 function preload() {
-
+    carData = loadJSON("assets/data/cars.json")
+    dinosaurData = loadJSON("assets/data/dinosaurs.json")
+    langData = loadJSON("assets/data/lang.json")
 }
 
 /**
@@ -30,6 +32,17 @@ function preload() {
 */
 function setup() {
     createCanvas(600, 400);
+
+    // if (lang === "fr") {
+    //     mainText = langData.instructions.fr;
+    // }
+    // else if (lang === "en") {
+    //     mainText = langData.instructions.en  ;
+    // }
+
+    mainText = langData.instructions[lang];
+    //Same thing but using array, not to repeat code
+      
 }
 
 /**
@@ -50,5 +63,7 @@ function draw() {
  * Generate a new car name
  */
 function mousePressed() {
-
+    const car = random(carData.cars);
+    const dinosaur = random(dinosaurData.dinosaurs);
+    mainText = car + " " + dinosaur;
 }
