@@ -4,6 +4,7 @@
 <head>
     <title>WINNER</title>
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
         body {
             background-color: black;
@@ -39,27 +40,36 @@
         #initial-text {
             font-size: 30px;
             text-align: center;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
         }
 
+        #initial-text.fade-out {
+            opacity: 0;
+        }
 
         #completion-text {
             font-size: 30px;
             font-weight: bold;
             text-align: center;
-
         }
 
-        .home-icon {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
+        #catch-text {
+            font-size: 16px;
+            color: white;
+            text-align: center;
+            width: 160px;
+            /* Match button width */
+            line-height: 1.2;
         }
+
 
         #buttons-container {
             margin-top: 20px;
             display: flex;
             justify-content: center;
+            align-items: center;
+            gap: 20px;
         }
 
         .button {
@@ -67,21 +77,27 @@
             text-decoration: none;
             border: 1px solid white;
             padding: 10px 20px;
-            margin: 0 10px;
+            width: 160px;
+            /* Fixed width for buttons */
+            text-align: center;
             transition: background-color 0.3s, color 0.3s;
+            box-sizing: border-box;
         }
 
         .button:hover {
             background-color: white;
             color: black;
         }
+
+        .moving-link {
+            position: absolute;
+            cursor: pointer;
+            z-index: 2;
+        }
     </style>
 </head>
 
 <body>
-    <a href="index.html" class="home-icon">
-        <img src="assets/images/homeIcon.png" width="65" height="65" alt="Home">
-    </a>
 
     <div id="initial-screen" class="full-screen">
         <div id="initial-text"></div>
@@ -91,12 +107,80 @@
         <div id="completion-text">Episode Completed</div>
         <div id="buttons-container">
             <a href="Bug1.html" class="button">Play Again</a>
-            <a href="index.html" class="button">Next Episode</a>
-            <a href="index.html" class="button">Take Me Home</a>
+            <div id="catch-text">Catch Houston<br>to go home!</div>
+            <a href="underConstruction.html" class="button">Next Episode</a>
         </div>
     </div>
 
     <script>
+        let sprite = {
+            x: 20,
+            y: 20,
+            xSpeed: 0,
+            ySpeed: 0,
+            size: 65,
+            speedLimit: 8,
+            speedChange: 0.8
+        };
+
+        let img;
+        let movingLink;
+
+        function preload() {
+            img = loadImage('assets/images/homeIcon.png');
+        }
+
+        function setup() {
+            let canvas = createCanvas(windowWidth, windowHeight);
+            canvas.style('position', 'fixed');
+            canvas.style('top', '0');
+            canvas.style('left', '0');
+            canvas.style('z-index', '-1');
+
+            movingLink = createA('index.html', '');
+            movingLink.class('moving-link');
+            movingLink.style('width', sprite.size + 'px');
+            movingLink.style('height', sprite.size + 'px');
+
+            sprite.xSpeed = random(-3, 3);
+            sprite.ySpeed = random(-3, 3);
+
+            clear();
+            noLoop();
+        }
+
+        function draw() {
+            background(0);
+
+            sprite.x += sprite.xSpeed;
+            sprite.y += sprite.ySpeed;
+
+            sprite.xSpeed += random(-sprite.speedChange, sprite.speedChange);
+            sprite.ySpeed += random(-sprite.speedChange, sprite.speedChange);
+
+            sprite.xSpeed = constrain(sprite.xSpeed, -sprite.speedLimit, sprite.speedLimit);
+            sprite.ySpeed = constrain(sprite.ySpeed, -sprite.speedLimit, sprite.speedLimit);
+
+            if (sprite.x + sprite.size >= width || sprite.x <= 0) {
+                sprite.xSpeed *= -1;
+                sprite.xSpeed += random(-2, 2);
+                sprite.x = constrain(sprite.x, 0, width - sprite.size);
+            }
+
+            if (sprite.y + sprite.size >= height || sprite.y <= 0) {
+                sprite.ySpeed *= -1;
+                sprite.ySpeed += random(-2, 2);
+                sprite.y = constrain(sprite.y, 0, height - sprite.size);
+            }
+
+            movingLink.position(sprite.x, sprite.y);
+            image(img, sprite.x, sprite.y, sprite.size, sprite.size);
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const firstText = new Typed('#initial-text', {
                 strings: ["With a swift flick of his silk...", "...Houston devours the giant", ""],
@@ -105,21 +189,28 @@
                 showCursor: false,
                 onComplete: function () {
                     setTimeout(() => {
+                        const initialTextElement = document.getElementById('initial-text');
                         new Typed('#initial-text', {
                             strings: ['His hunger finally quenched, yet adventure always calls again'],
                             typeSpeed: 50,
+                            backSpeed: 30,
                             showCursor: false,
                             onComplete: function () {
                                 setTimeout(() => {
-                                    const initialScreen = document.getElementById('initial-screen');
-                                    const completionScreen = document.getElementById('completion-screen');
+                                    initialTextElement.classList.add('fade-out');
 
-                                    initialScreen.style.opacity = '0';
-                                    initialScreen.addEventListener('transitionend', function fadeOutComplete() {
+                                    setTimeout(() => {
+                                        const initialScreen = document.getElementById('initial-screen');
+                                        const completionScreen = document.getElementById('completion-screen');
+
+                                        initialScreen.style.opacity = '0';
                                         completionScreen.style.opacity = '1';
                                         completionScreen.style.pointerEvents = 'auto';
-                                        initialScreen.removeEventListener('transitionend', fadeOutComplete);
-                                    });
+
+                                        setTimeout(() => {
+                                            loop();
+                                        }, 1000);
+                                    }, 500);
                                 }, 1000);
                             }
                         });

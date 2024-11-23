@@ -88,18 +88,21 @@
             movingPoint.pos.add(movingPoint.vel);
 
             // Introduce a random offset to the position and velocity
-
             movingPoint.vel.x += random(-1, 0.8);
             movingPoint.vel.y += random(-1, 0.8);
 
             movingPoint.pos.x += random(-5, 5);
             movingPoint.pos.y += random(-5, 5);
 
-            // Bounce off the edges of the canvas
-            if (movingPoint.pos.x >= width || movingPoint.pos.x <= 0) {
+            // Ensure the position stays within the canvas bounds
+            movingPoint.pos.x = constrain(movingPoint.pos.x, 0, width);
+            movingPoint.pos.y = constrain(movingPoint.pos.y, 0, height);
+
+            // Bounce off the edges of the canvas (invert velocity when touching edges)
+            if (movingPoint.pos.x === 0 || movingPoint.pos.x === width) {
                 movingPoint.vel.x *= -1;
             }
-            if (movingPoint.pos.y >= height || movingPoint.pos.y <= 0) {
+            if (movingPoint.pos.y === 0 || movingPoint.pos.y === height) {
                 movingPoint.vel.y *= -1;
             }
         }
