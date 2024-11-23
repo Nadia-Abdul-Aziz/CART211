@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Under Construction</title>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            font-family: 'Courier New', monospace;
+            color: white;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .full-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10000;
+            /* Increase z-index to ensure it's above other elements */
+            visibility: visible;
+            /* Ensure it's visible */
+        }
+
+        #initial-text {
+            font-size: 20px;
+            text-align: center;
+            z-index: 1;
+            /* Keep this on top of the canvas */
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            /* Canvas stays in the background */
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="home-icon">
+        <img src="assets/images/homeIcon.png" width="65" height="65" alt="Home">
+    </a>
+    <div class="full-screen">
+        <div id="initial-text"></div>
+        <div id="canvas-container"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script>
+        let movingPoint;
+        let previousPos;
+
+        function setup() {
+            const canvas = createCanvas(windowWidth, windowHeight);
+            canvas.parent('canvas-container');
+            background(0);
+
+            movingPoint = {
+                pos: createVector(0, 0),
+                vel: createVector(5, 3)
+            };
+
+            // Initialize previousPos to the starting position
+            previousPos = movingPoint.pos.copy();
+        }
+
+        function update() {
+            // Move the point as before
+            movingPoint.pos.add(movingPoint.vel);
+
+            // Introduce a random offset to the position and velocity
+
+            movingPoint.vel.x += random(-1, 0.8);
+            movingPoint.vel.y += random(-1, 0.8);
+
+            movingPoint.pos.x += random(-5, 5);
+            movingPoint.pos.y += random(-5, 5);
+
+            // Bounce off the edges of the canvas
+            if (movingPoint.pos.x >= width || movingPoint.pos.x <= 0) {
+                movingPoint.vel.x *= -1;
+            }
+            if (movingPoint.pos.y >= height || movingPoint.pos.y <= 0) {
+                movingPoint.vel.y *= -1;
+            }
+        }
+
+        function draw() {
+            // Draw a line from the previous position to the current position
+            stroke(100);
+            strokeWeight(1);  // Adjust line thickness as needed
+            line(previousPos.x, previousPos.y, movingPoint.pos.x, movingPoint.pos.y);
+
+            // Update the previous position to the current position
+            previousPos = movingPoint.pos.copy();
+
+            update();
+        }
+
+        // Resize the canvas when the window size changes
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            background(0);
+        }
+
+        // Typed.js initialization
+        document.addEventListener('DOMContentLoaded', function () {
+            const initialText = new Typed('#initial-text', {
+                strings: ['Under Construction...'],
+                typeSpeed: 50,
+                showCursor: false,
+            });
+        });
+    </script>
+</body>
+
+</html>

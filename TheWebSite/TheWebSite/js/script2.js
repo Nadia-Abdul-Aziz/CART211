@@ -1,35 +1,90 @@
-let player, boss;
-let playerBullets = [];
-let bossBullets = [];
-let mine;
-let playerHealth = 100;
-let bossHealth = 100;
-let gameState = 'playing';
+/**
+ * Houston's Bug Adventure - Boss Fight
+ * 
+ * The final showdown with Bugzilla
+ * 
+ * Instructions:
+ * - Move Houston with left and right arrow keys
+ * - Press spacebar to shoot web bullets
+ * - Avoid Bugzilla's attacks and the mines
+ * - Defeat Bugzilla before he defeats you
+ * 
+ * Made with p5.js
+ * https://p5js.org/
+ */
+"use strict";
+
+// Game states
+const GAME_PLAYING = 'playing';
+const GAME_OVER = 'lose';
+const GAME_WON = 'win';
+
+// Current game state
+let gameState = GAME_PLAYING;
 let gameOverInitialized = false;
 let gameWonInitialized = false;
 
-let playerImg;
-let bossImg;
+// Variables for images
+let houstonImg;
+let bugzillaImg;
+
+// Combat variables
+let playerBullets = [];
+let bossBullets = [];
+let playerHealth = 100;
+let bossHealth = 100;
+
+// Shooting mechanics
+let lastShotTime = 0;
+const SHOT_COOLDOWN = 500;
+let isReloading = false;
+let reloadProgress = 0;
+
+// Houston
+let houston = {
+    body: {
+        x: undefined,
+        y: undefined,
+        size: 100,
+        speed: 10
+    }
+};
+
+// Bugzilla
+let bugzilla = {
+    body: {
+        x: undefined,
+        y: undefined,
+        size: 400
+    }
+};
+
+// Mine
+let mine = {
+    x: undefined,
+    y: undefined,
+    size: 10,
+    speed: undefined,
+    collisionRadius: 20
+};
 
 function preload() {
-    playerImg = loadImage('assets/images/homeIcon.png');
-    bossImg = loadImage('assets/images/Bug.png');
+    houstonImg = loadImage('assets/images/homeIcon.png');
+    bugzillaImg = loadImage('assets/images/Bug.png');
 }
 
 function setup() {
     createCanvas(640, 480);
-    player = {
-        x: width / 2,
-        y: height - 50,
-        size: 100
-    };
-    boss = {
-        x: width / 2,
-        y: 100,
-        size: 400
-    };
-    // Initialize single mine
+    initializePositions();
     spawnMine();
+}
+
+function initializePositions() {
+    houston.body.x = width / 2;
+    houston.body.y = height - 50;
+
+    bugzilla.body.x = width / 2;
+    bugzilla.body.y = 100;
 }
 
 function draw() {
@@ -37,16 +92,16 @@ function draw() {
     drawBorder();
 
     switch (gameState) {
-        case 'playing':
+        case GAME_PLAYING:
             updateGame();
             break;
-        case 'lose':
+        case GAME_OVER:
             if (!gameOverInitialized) {
                 initializeGameOver();
                 gameOverInitialized = true;
             }
             break;
-        case 'win':
+        case GAME_WON:
             if (!gameWonInitialized) {
                 initializeGameWon();
                 gameWonInitialized = true;
@@ -65,94 +120,60 @@ function drawBorder() {
 }
 
 function updateGame() {
-    // Move player
-    if (keyIsDown(LEFT_ARROW)) player.x -= 10;
-    if (keyIsDown(RIGHT_ARROW)) player.x += 10;
-    player.x = constrain(player.x, player.size / 2, width - player.size / 2);
-
-    // Update and draw mine
+    moveHouston();
+    updateBullets();
     updateMine();
-    drawMine();
-    checkMineCollision();
+    drawEntities();
+    updateReloadSystem();
+    checkGameStatus();
+}
 
-    // Draw player
-    push();
-    translate(player.x, player.y);
-    rotate(PI);
-    imageMode(CENTER);
-    image(playerImg, 0, 0, player.size, player.size);
-    pop();
+function moveHouston() {
+    if (keyIsDown(LEFT_ARROW)) houston.body.x -= houston.body.speed;
+    if (keyIsDown(RIGHT_ARROW)) houston.body.x += houston.body.speed;
+    houston.body.x = constrain(houston.body.x, houston.body.size / 2, width - houston.body.size / 2);
+}
 
-    // Draw boss
-    push();
-    translate(boss.x, boss.y);
-    rotate(PI);
-    imageMode(CENTER);
-    image(bossImg, 0, 30, boss.size, boss.size);
-    pop();
-
-    // Draw vertical health bars
-    drawVerticalHealthBars();
-
-    // Update and draw player bullets
+function updateBullets() {
+    // Update player bullets
     for (let i = playerBullets.length - 1; i >= 0; i--) {
         playerBullets[i].y -= 20;
-        fill(255);
-        ellipse(playerBullets[i].x, playerBullets[i].y, 10, 10);
 
-        // Check for collision with boss
-        if (dist(playerBullets[i].x, playerBullets[i].y, boss.x, boss.y) < boss.size / 2) {
+        // Check collision with boss
+        if (dist(playerBullets[i].x, playerBullets[i].y, bugzilla.body.x, bugzilla.body.y) < bugzilla.body.size / 2) {
             bossHealth -= 5;
             playerBullets.splice(i, 1);
             continue;
         }
 
-        // Remove bullets that go off screen
-        if (playerBullets[i] && playerBullets[i].y < 0) {
+        // Remove off-screen bullets
+        if (playerBullets[i].y < 0) {
             playerBullets.splice(i, 1);
         }
     }
 
-    // Boss shoots randomly
-    if (random() < 0.03) { // 3% chance every frame
-        let bulletX = random(boss.x - boss.size / 6, boss.x + boss.size / 6);
-        bossBullets.push({ x: bulletX, y: boss.y + boss.size / 4 });
+    // Boss shooting logic
+    if (random() < 0.03) {
+        let bulletX = random(bugzilla.body.x - bugzilla.body.size / 6, bugzilla.body.x + bugzilla.body.size / 6);
+        bossBullets.push({ x: bulletX, y: bugzilla.body.y + bugzilla.body.size / 4 });
     }
 
-    // Update and draw boss bullets
+    // Update boss bullets
     for (let i = bossBullets.length - 1; i >= 0; i--) {
         bossBullets[i].y += 7;
-        fill(255);
-        ellipse(bossBullets[i].x, bossBullets[i].y, 10, 10);
 
-        // Check for collision with player
-        if (dist(bossBullets[i].x, bossBullets[i].y, player.x, player.y) < player.size / 2) {
+        // Check collision with player
+        if (dist(bossBullets[i].x, bossBullets[i].y, houston.body.x, houston.body.y) < houston.body.size / 2) {
             playerHealth -= 10;
             bossBullets.splice(i, 1);
+            continue;
         }
 
-        // Remove bullets that go off screen
-        if (bossBullets[i] && bossBullets[i].y > height) {
+        // Remove off-screen bullets
+        if (bossBullets[i].y > height) {
             bossBullets.splice(i, 1);
         }
     }
-
-    // Check for game over
-    if (playerHealth <= 0) {
-        gameState = 'lose';
-    } else if (bossHealth <= 0) {
-        gameState = 'win';
-    }
-}
-
-function spawnMine() {
-    mine = {
-        x: random(width),
-        y: 0,
-        size: 10,
-        speed: random(4, 8), // Increased speed range
-        collisionRadius: 20
-    };
 }
 
 function updateMine() {
@@ -160,70 +181,137 @@ function updateMine() {
     if (mine.y > height) {
         spawnMine();
     }
+
+    // Check mine collision with player
+    const distance = dist(mine.x, mine.y, houston.body.x, houston.body.y);
+    if (distance < mine.collisionRadius + houston.body.size / 2) {
+        gameState = GAME_OVER;
+    }
 }
 
-function drawMine() {
+function drawEntities() {
+    // Draw Houston
+    push();
+    translate(houston.body.x, houston.body.y);
+    rotate(PI);
+    imageMode(CENTER);
+    image(houstonImg, 0, 0, houston.body.size, houston.body.size);
+    pop();
+
+    // Draw Bugzilla
+    push();
+    translate(bugzilla.body.x, bugzilla.body.y);
+    rotate(PI);
+    imageMode(CENTER);
+    image(bugzillaImg, 0, 30, bugzilla.body.size, bugzilla.body.size);
+    pop();
+
+    // Draw bullets
+    fill(255);
+    playerBullets.forEach(bullet => {
+        ellipse(bullet.x, bullet.y, 10, 10);
+    });
+    bossBullets.forEach(bullet => {
+        ellipse(bullet.x, bullet.y, 10, 10);
+    });
+
+    // Draw mine
     push();
     noStroke();
     fill("red");
     ellipse(mine.x, mine.y, mine.size);
     pop();
-}
 
-function checkMineCollision() {
-    // Calculate the distance between the mine and the player
-    const distance = dist(mine.x, mine.y, player.x, player.y);
+    // Draw health bars
+    drawHealthBars();
 
-    // Check if the distance is less than the collision threshold
-    if (distance < mine.collisionRadius + player.size / 2) {
-        gameState = 'lose';
+    // Draw reload indicator if needed
+    if (isReloading) {
+        drawReloadIndicator();
     }
 }
 
-function drawVerticalHealthBars() {
+function drawHealthBars() {
     push();
     textFont('Courier New');
     textSize(14);
     textAlign(CENTER, TOP);
 
-    // Boss health bar (top left corner)
+    // Boss health bar
     stroke(255);
     strokeWeight(1);
     noFill();
-    rect(20, 20, 16, 120);  // Border
+    rect(20, 20, 16, 120);
     fill(0);
     noStroke();
-    rect(21, 21, 14, 118);  // Black background
+    rect(21, 21, 14, 118);
     fill(255);
-    rect(21, 21 + map(bossHealth, 100, 0, 0, 118), 14, map(bossHealth, 0, 100, 0, 118));  // White health
-    // Number
-    noStroke();
-    fill(255);
-    text(bossHealth, 28, 145);  // Placed below the bar
+    rect(21, 21 + map(bossHealth, 100, 0, 0, 118), 14, map(bossHealth, 0, 100, 0, 118));
+    text(bossHealth, 28, 145);
 
-    // Player health bar (bottom right corner)
+    // Player health bar
     stroke(255);
     strokeWeight(1);
     noFill();
-    rect(width - 36, height - 140, 16, 120);  // Border
+    rect(width - 36, height - 140, 16, 120);
     fill(0);
     noStroke();
-    rect(width - 35, height - 139, 14, 118);  // Black background
+    rect(width - 35, height - 139, 14, 118);
     fill(255);
-    rect(width - 35, height - 139 + map(playerHealth, 100, 0, 0, 118), 14, map(playerHealth, 0, 100, 0, 118));  // White health
-    // Number
-    noStroke();
-    fill(255);
-    text(playerHealth, width - 28, height - 160);  // Placed above the bar
-
+    rect(width - 35, height - 139 + map(playerHealth, 100, 0, 0, 118), 14, map(playerHealth, 0, 100, 0, 118));
+    text(playerHealth, width - 28, height - 160);
     pop();
+}
+
+function drawReloadIndicator() {
+    push();
+    noFill();
+    strokeWeight(3);
+    let startAngle = -PI / 2;
+    let endAngle = map(reloadProgress, 0, 100, -PI / 2, -PI / 2 + TWO_PI);
+    let indicatorSize = 30;
+
+    stroke(255, 0, 0);
+    arc(houston.body.x, houston.body.y, indicatorSize, indicatorSize, startAngle, endAngle);
+    pop();
+}
+
+function updateReloadSystem() {
+    if (isReloading) {
+        const currentTime = millis();
+        reloadProgress = map(currentTime - lastShotTime, 0, SHOT_COOLDOWN, 0, 100);
+        if (currentTime - lastShotTime >= SHOT_COOLDOWN) {
+            isReloading = false;
+            reloadProgress = 0;
+        }
+    }
+}
+
+function spawnMine() {
+    mine.x = random(width);
+    mine.y = 0;
+    mine.speed = random(4, 8);
+}
+
+function checkGameStatus() {
+    if (playerHealth <= 0) {
+        gameState = GAME_OVER;
+    } else if (bossHealth <= 0) {
+        gameState = GAME_WON;
+    }
 }
 
 function keyPressed() {
     if (key === ' ') {
-        if (gameState === 'playing') {
-            playerBullets.push({ x: player.x, y: player.y - player.size / 2 });
-        } else if (gameState === 'lose') {
+        if (gameState === GAME_PLAYING) {
+            const currentTime = millis();
+            if (!isReloading && currentTime - lastShotTime >= SHOT_COOLDOWN) {
+                playerBullets.push({ x: houston.body.x, y: houston.body.y - houston.body.size / 2 });
+                lastShotTime = currentTime;
+                isReloading = true;
+                reloadProgress = 0;
+            }
+        } else if (gameState === GAME_OVER) {
             resetGame();
         }
     }
@@ -307,7 +395,6 @@ function initializeGameWon() {
     gameWonElement.style('top', '0');
     gameWonElement.style('left', '0');
 
-    // CSS ANIMATION !!!!
     let style = createElement('style');
     style.html(`
         @keyframes flash {
@@ -339,23 +426,16 @@ function initializeGameWon() {
 
 function resetGame() {
     removeElements();
-    player = {
-        x: width / 2,
-        y: height - 50,
-        size: 100
-    };
-    boss = {
-        x: width / 2,
-        y: 100,
-        size: 400
-    };
-    // Reset mine
+    initializePositions();
     spawnMine();
     playerHealth = 100;
     bossHealth = 100;
     playerBullets = [];
     bossBullets = [];
-    gameState = 'playing';
+    gameState = GAME_PLAYING;
     gameOverInitialized = false;
     gameWonInitialized = false;
+    lastShotTime = 0;
+    isReloading = false;
+    reloadProgress = 0;
 }
