@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Scene Recorder</title>
+
+    <!-- Import A-Frame and AR.js -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+
+    <style>
+        body,
+        html {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        #uiOverlay {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        #uiOverlay button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #recordingStatus {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: red;
+            font-weight: bold;
+            display: none;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        #startButton {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+            border-radius: 5px;
+        }
+
+        .arjs-loader {
+            position: fixed;
+            z-index: 999;
+            overflow: show;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading indicator -->
+    <div class="arjs-loader">Loading...</div>
+
+    <div id="recordingStatus">Recording: 00:00</div>
+    <button id="startButton" onclick="startAR()">Start AR Experience</button>
+    <div id="uiOverlay" style="display: none;">
+        <button id="recordButton" onclick="toggleRecording()">Start Recording</button>
+    </div>
+
+    <!-- A-Frame AR Scene -->
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix;"
+        vr-mode-ui="enabled: false" renderer="logarithmicDepthBuffer: true; precision: medium;" style="display: none;"
+        id="ar-scene">
+
+        <a-assets>
+            <a-asset-item id="hummingbird" src="stylized_hummingbird_low_poly_gltf/scene.gltf"></a-asset-item>
+            <a-asset-item id="orchid" src="orchid_flower_gltf/scene.gltf"></a-asset-item>
+        </a-assets>
+
+        <a-marker type="pattern" url="pattern-marker.patt" smooth="true" smoothCount="5">
+            <a-entity gltf-model="#hummingbird" position="0 0.5 0" scale="0.2 0.2 0.2"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 4000">
+            </a-entity>
+
+            <a-entity gltf-model="#orchid" position="0.5 0.7 0" scale="0.05 0.05 0.05"
+                animation="property: scale; to: 0.4 1 0.4; dir: alternate; loop: true; dur: 1500">
+            </a-entity>
+
+            <a-entity gltf-model="#orchid" position="-0.5 0.3 0" scale="0.05 0.05 0.05"
+                animation="property: scale; to: 0.4 1 0.4; dir: alternate; loop: true; dur: 1500">
+            </a-entity>
+        </a-marker>
+
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let stream;
+        let recordingTimer;
+        let recordingDuration = 0;
+        let isRecording = false;
+
+        // Wait for scene to load
+        const scene = document.querySelector('a-scene');
+        scene.addEventListener('loaded', function () {
+            document.querySelector('.arjs-loader').style.display = 'none';
+        });
+
+        async function startAR() {
+            try {
+                // Request camera permissions explicitly
+                await navigator.mediaDevices.getUserMedia({ video: true });
+
+                document.getElementById('startButton').style.display = 'none';
+                document.getElementById('ar-scene').style.display = 'block';
+                document.getElementById('uiOverlay').style.display = 'flex';
+
+                // Force video to play inline on mobile
+                const videoElement = document.querySelector('video');
+                if (videoElement) {
+                    videoElement.setAttribute('playsinline', '');
+                    videoElement.setAttribute('webkit-playsinline', '');
+                    await videoElement.play();
+                }
+            } catch (error) {
+                console.error('Error starting AR:', error);
+                alert('Failed to access camera. Please ensure camera permissions are granted.');
+            }
+        }
+
+        async function startRecording() {
+            try {
+                // Capture both the AR.js canvas and the camera video
+                const canvas = document.querySelector('canvas');
+                const videoElement = document.querySelector('video');
+
+                // Create a composite canvas to combine AR and video
+                const compositeCanvas = document.createElement('canvas');
+                compositeCanvas.width = canvas.width;
+                compositeCanvas.height = canvas.height;
+                const ctx = compositeCanvas.getContext('2d');
+
+                // Create a stream from the composite canvas
+                stream = compositeCanvas.captureStream(30);
+
+                // Set up the recorder
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'video/webm;codecs=vp9'
+                });
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = url;
+                    downloadLink.download = `ar_scene_recording_${new Date().toISOString()}.webm`;
+                    downloadLink.click();
+
+                    recordedChunks = [];
+                    clearInterval(recordingTimer);
+                    document.getElementById('recordingStatus').style.display = 'none';
+                    document.getElementById('recordButton').textContent = 'Start Recording';
+                    isRecording = false;
+                };
+
+                // Start recording and composite drawing
+                mediaRecorder.start();
+                isRecording = true;
+                document.getElementById('recordButton').textContent = 'Stop Recording';
+                document.getElementById('recordingStatus').style.display = 'block';
+
+                // Composite drawing loop
+                function drawComposite() {
+                    if (isRecording) {
+                        // Draw video first
+                        if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                            ctx.drawImage(videoElement, 0, 0, compositeCanvas.width, compositeCanvas.height);
+                        }
+                        // Draw AR canvas on top
+                        ctx.drawImage(canvas, 0, 0);
+                        requestAnimationFrame(drawComposite);
+                    }
+                }
+                drawComposite();
+
+                // Start recording timer
+                recordingDuration = 0;
+                recordingTimer = setInterval(() => {
+                    recordingDuration++;
+                    const minutes = Math.floor(recordingDuration / 60);
+                    const seconds = recordingDuration % 60;
+                    document.getElementById('recordingStatus').textContent =
+                        `Recording: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            } catch (err) {
+                console.error('Error starting recording:', err);
+                alert('Failed to start recording. Please try again.');
+            }
+        }
+
+        function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                stream.getTracks().forEach(track => track.stop());
+            }
+        }
+    </script>
+</body>
+
+</html>
