@@ -28,15 +28,19 @@
 "use strict";
 
 //Defining variables for images
-let houstonImg;
+let player1Img;
+let player2Img;
 let webImg;
-let bugImg
+let bugImg;
+let powerTokenImg;
 
 //Loading assets
 function preload() {
-    houstonImg = loadImage('assets/images/homeIcon.png');
+    player1Img = loadImage('assets/images/homeIcon.png');
+    player2Img = loadImage('assets/images/rival2.png'); // New spider image for player 2
     webImg = loadImage('assets/images/webShoot.png');
     bugImg = loadImage('assets/images/Bug.png');
+    powerTokenImg = loadImage('assets/images/power.png'); // New power token image
 }
 
 //For end screens
@@ -368,13 +372,8 @@ function createPowerToken() {
 function drawPowerTokens() {
     for (let token of powerTokens) {
         push();
-        noStroke();
-        fill("yellow");
-        ellipse(token.x, token.y, token.size);
-        fill("black");
-        textSize(10);
-        textAlign(CENTER, CENTER);
-        text("+", token.x, token.y); //Plus symbol in the middle, for funsies
+        imageMode(CENTER);
+        image(powerTokenImg, token.x, token.y, token.size * 2, token.size * 2); // Adjusted size multiplier for better visibility
         pop();
     }
 }
@@ -448,7 +447,6 @@ function checkWebPowerTokenCollisions() {
 
 //Visually drawing each player's spider
 function drawPlayer1() {
-
     //Web string
     push();
     stroke("white");
@@ -464,13 +462,12 @@ function drawPlayer1() {
     push();
     imageMode(CENTER);
     translate(player1.body.x, player1.body.y);
-    rotate(180); //Rotating the phyisical image permanently 
+    rotate(180); //Rotating the physical image permanently 
     rotate(player1.body.rotation); //Related to user input, gameplay rotation
-    image(houstonImg, 0, 0, player1.body.size + player1.body.growthAmount * 3, player1.body.size + player1.body.growthAmount * 3);
+    image(player1Img, 0, 0, player1.body.size + player1.body.growthAmount * 3, player1.body.size + player1.body.growthAmount * 3);
     pop();
 }
 
-//Same as player 1
 function drawPlayer2() {
     push();
     stroke("white");
@@ -489,7 +486,7 @@ function drawPlayer2() {
     imageMode(CENTER);
     translate(player2.body.x, player2.body.y);
     rotate(player2.body.rotation);
-    image(houstonImg, 0, 0, player2.body.size + player2.body.growthAmount * 3, player2.body.size + player2.body.growthAmount * 3);
+    image(player2Img, 0, 0, player2.body.size + player2.body.growthAmount * 3, player2.body.size + player2.body.growthAmount * 3);
     pop();
 }
 

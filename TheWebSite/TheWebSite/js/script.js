@@ -17,6 +17,7 @@
 let bugImg;
 let houstonImg;
 let webImg;
+let mineImg;
 
 // Game states
 const GAME_PLAYING = 'playing';
@@ -35,7 +36,7 @@ let gameWonInitialized = false;
 const spider = {
     body: {
         x: 320,
-        y: 450,
+        y: 490,
         size: 150,
         speed: 10
     },
@@ -71,6 +72,7 @@ function preload() {
     bugImg = loadImage('assets/images/Bug.png');
     houstonImg = loadImage('assets/images/homeIcon.png');
     webImg = loadImage('assets/images/webShoot.png');
+    mineImg = loadImage('assets/images/mine.png');
 }
 
 function setup() {
@@ -132,11 +134,8 @@ function moveMine() {
 }
 
 function drawMine() {
-    push();
-    noStroke();
-    fill("white");
-    ellipse(mine.x, mine.y, mine.size);
-    pop();
+    imageMode(CENTER);
+    image(mineImg, mine.x, mine.y, mine.size * 2, mine.size * 2);
 }
 
 function resetMine() {

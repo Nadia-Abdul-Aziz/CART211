@@ -27,6 +27,7 @@ let gameWonInitialized = false;
 // Variables for images
 let houstonImg;
 let bugzillaImg;
+let mineImg;
 
 // Combat variables
 let playerBullets = [];
@@ -63,14 +64,15 @@ let bugzilla = {
 let mine = {
     x: undefined,
     y: undefined,
-    size: 10,
+    size: 40,
     speed: undefined,
     collisionRadius: 20
 };
 
 function preload() {
     houstonImg = loadImage('assets/images/homeIcon.png');
-    bugzillaImg = loadImage('assets/images/Bug.png');
+    bugzillaImg = loadImage('assets/images/Boss.png');
+    mineImg = loadImage('assets/images/mine.png');
 }
 
 function setup() {
@@ -81,7 +83,7 @@ function setup() {
 
 function initializePositions() {
     houston.body.x = width / 2;
-    houston.body.y = height - 50;
+    houston.body.y = height - 10;
 
     bugzilla.body.x = width / 2;
     bugzilla.body.y = 100;
@@ -209,17 +211,16 @@ function drawEntities() {
     // Draw bullets
     fill(255);
     playerBullets.forEach(bullet => {
-        ellipse(bullet.x, bullet.y, 10, 10);
+        ellipse(bullet.x, bullet.y, 8, 8);
     });
     bossBullets.forEach(bullet => {
-        ellipse(bullet.x, bullet.y, 10, 10);
+        ellipse(bullet.x, bullet.y, 8, 8);
     });
 
     // Draw mine
     push();
-    noStroke();
-    fill("red");
-    ellipse(mine.x, mine.y, mine.size);
+    imageMode(CENTER);
+    image(mineImg, mine.x, mine.y, mine.size, mine.size);
     pop();
 
     // Draw health bars
@@ -271,7 +272,7 @@ function drawReloadIndicator() {
     let endAngle = map(reloadProgress, 0, 100, -PI / 2, -PI / 2 + TWO_PI);
     let indicatorSize = 30;
 
-    stroke(255, 0, 0);
+    stroke(0, 0, 0);
     arc(houston.body.x, houston.body.y, indicatorSize, indicatorSize, startAngle, endAngle);
     pop();
 }

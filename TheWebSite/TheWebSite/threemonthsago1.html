@@ -43,7 +43,6 @@
             text-align: center;
             margin-top: 20px;
             height: 50px;
-            /* Adjusted height for each line */
         }
 
         .home-icon {
@@ -56,7 +55,6 @@
         .button-container {
             margin-top: 20px;
             opacity: 0;
-            /* Start with the button invisible */
             transition: opacity 0.5s ease-in-out;
         }
 
@@ -72,6 +70,22 @@
             background-color: white;
             color: black;
         }
+
+        /* Add fade-in animation for the image */
+        .fade-in-image {
+            opacity: 0;
+            animation: fadeIn 2s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 
@@ -81,7 +95,7 @@
     </a>
     <div class="split-screen">
         <div class="left-side">
-            <img src="assets/images/homeIcon.png" width="400" height="400">
+            <img src="assets/images/angle3.png" width="500" height="250" class="fade-in-image">
         </div>
         <div class="right-side">
             <div id="typed-text-1"></div>
@@ -99,13 +113,11 @@
                 typeSpeed: 50,
                 showCursor: false,
                 onComplete: function () {
-                    // Start typing the second line when the first is complete
                     new Typed('#typed-text-2', {
                         strings: ["...has become eager to savour nature's grand feast"],
                         typeSpeed: 50,
                         showCursor: false,
                         onComplete: function () {
-                            // Show the button when both lines are typed
                             document.querySelector('.button-container').style.opacity = '1';
                         }
                     });
