@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Nosy Neighbor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <style>
+        body {
+            background-color: black;
+            font-family: 'Courier New', monospace;
+            color: white;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .initial-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #scrolling-text {
+            font-size: 30px;
+            white-space: nowrap;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: scrollLeft 10s linear infinite;
+        }
+
+        @keyframes scrollLeft {
+            0% {
+                left: 100%;
+            }
+
+            100% {
+                left: -100%;
+            }
+        }
+
+        #behold-text {
+            font-size: 60px;
+            text-align: center;
+            display: none;
+        }
+
+        .letter-screen {
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 4rem;
+        }
+
+        .letter-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .letter-header {
+            position: relative;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 0.5rem;
+        }
+
+        #incoming-message {
+            font-size: 24px;
+            margin-bottom: 0.25rem;
+            color: #fff;
+        }
+
+        #morse-text {
+            font-size: 16px;
+            color: #666;
+            letter-spacing: 8px;
+            opacity: 0;
+            animation: longFadeIn 1s ease-in forwards;
+        }
+
+        @keyframes longFadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .letter-content {
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        #letter-text {
+            white-space: pre-line;
+        }
+
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        #next-button {
+            margin-top: 20px;
+            display: none;
+            text-align: left;
+        }
+
+        #next-button a {
+            color: white;
+            text-decoration: none;
+            border: 1px solid white;
+            padding: 10px 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #next-button a:hover {
+            background-color: white;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="home-icon">
+        <img src="assets/images/homeIcon.png" width="65" height="65" alt="Home">
+    </a>
+
+    <!-- Initial scrolling text screen -->
+    <div class="initial-screen">
+        <div id="scrolling-text">...---... ...---... ...---...Houston...---... ...---... ...---... ...---...We have a
+            problem...---... ...---... ...---...</div>
+        <div id="behold-text"></div>
+    </div>
+
+    <!-- Letter format screen -->
+    <div class="letter-screen">
+        <div class="letter-container">
+            <div class="letter-header">
+                <div id="incoming-message"></div>
+                <div id="morse-text">... --- ...</div>
+            </div>
+            <div class="letter-content">
+                <div id="letter-text"></div>
+            </div>
+            <div id="next-button">
+                <a href="yesterday3.html">Next</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const scrollText = document.getElementById('scrolling-text');
+            const initialScreen = document.querySelector('.initial-screen');
+            const letterScreen = document.querySelector('.letter-screen');
+
+            scrollText.addEventListener('animationiteration', function () {
+                setTimeout(() => {
+                    scrollText.style.display = 'none';
+                    document.getElementById('behold-text').style.display = 'block';
+
+                    new Typed('#behold-text', {
+                        strings: ['…a bigger problem.'],
+                        typeSpeed: 100,
+                        showCursor: false,
+                        onComplete: function () {
+                            setTimeout(() => {
+                                initialScreen.style.display = 'none';
+                                letterScreen.style.display = 'block';
+
+                                new Typed('#incoming-message', {
+                                    strings: ['Incoming message from anonymous overwatcher:'],
+                                    typeSpeed: 50,
+                                    showCursor: false,
+                                    onComplete: function () {
+                                        setTimeout(() => {
+                                            const morseText = document.getElementById('morse-text');
+                                            morseText.style.animation = 'blink 0.5s infinite';
+                                        }, 500);
+
+                                        new Typed('#letter-text', {
+                                            strings: [`Dear Houston,
+
+I hope your web building activities have been swell,
+
+Given the impending bug invasion of your territories, I have received word that your rival Apollo is on the move.
+
+He plans on preying on your weakened state to feast on the incoming bugs and take over your web!
+
+He will reach your web soon, please proceed defensively,
+
+Anonymous.`],
+                                            typeSpeed: 40,
+                                            showCursor: false,
+                                            onComplete: function () {
+                                                document.getElementById('next-button').style.display = 'block';
+                                            }
+                                        });
+                                    }
+                                });
+                            }, 1000);
+                        }
+                    });
+                }, 30);
+            });
+        });
+    </script>
+</body>
+
+</html>

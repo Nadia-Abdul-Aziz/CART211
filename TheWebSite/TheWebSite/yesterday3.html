@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Houston vs Apollo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            color: white;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sliding-image-left {
+            position: absolute;
+            left: -50%;
+            width: 30%;
+            height: 100%;
+            animation: slideInLeft 2s ease-out forwards;
+            z-index: -1;
+            object-fit: contain;
+        }
+
+        .sliding-image-right {
+            position: absolute;
+            right: -50%;
+            width: 30%;
+            height: 100%;
+            animation: slideInRight 2s ease-out forwards;
+            z-index: -1;
+            object-fit: contain;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                left: -50%;
+            }
+
+            to {
+                left: 0;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                right: -50%;
+            }
+
+            to {
+                right: 0;
+            }
+        }
+
+        .full-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        #initial-text {
+            font-size: 15px;
+            text-align: center;
+        }
+
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        #next-button {
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 2s ease-in;
+        }
+
+        #next-button a {
+            color: white;
+            text-decoration: none;
+            border: 1px solid white;
+            padding: 10px 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #next-button a:hover {
+            background-color: white;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="assets/images/homeIcon.png" alt="Left Character" class="sliding-image-left">
+    <img src="assets/images/homeIcon.png" alt="Right Character" class="sliding-image-right">
+
+    <a href="index.html" class="home-icon">
+        <img src="assets/images/homeIcon.png" alt="Home" width="65" height="65">
+    </a>
+
+    <div class="full-screen">
+        <div id="initial-text"></div>
+        <div id="additional-text"></div>
+        <div id="next-button">
+            <a href="yesterday4.html">Begin Duel</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize the first text
+            const firstText = new Typed('#initial-text', {
+                strings: ['Now, with the courage of a colossal beast'],
+                typeSpeed: 50,
+                showCursor: false,
+                onComplete: function () {
+                    // Initialize the second text after the first is completed
+                    const secondText = new Typed('#additional-text', {
+                        strings: ['Houston prepares for battle'],
+                        typeSpeed: 50,
+                        showCursor: false,
+                        onComplete: function () {
+                            const nextButton = document.getElementById('next-button');
+                            nextButton.style.opacity = 1; // Fade in the button
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
