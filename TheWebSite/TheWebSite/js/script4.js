@@ -19,8 +19,8 @@ let gameWonInitialized = false;
 let player = {
     x: 320,
     y: 430,
-    width: 60,
-    height: 40,
+    width: 100,
+    height: 70,
     speed: 5,
     cooldown: 0
 };

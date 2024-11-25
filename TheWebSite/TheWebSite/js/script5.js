@@ -4,6 +4,16 @@ const GAME_OVER = 'game over';
 const GAME_WON = 'game won';
 const FINAL_CHALLENGE = 'final challenge';
 
+//Images
+let dinoImage;
+let bossImage;
+
+function preload() {
+    // Replace these with actual image paths 
+    dinoImage = loadImage('assets/images/angle5.png');
+    bossImage = loadImage('assets/images/Boss.png');
+}
+
 // Current game state
 let gameState = GAME_PLAYING;
 
@@ -26,7 +36,7 @@ let finalObstacle = null;
 let dino = {
     x: 150,
     y: 0,
-    size: 40,
+    size: 50,
     ySpeed: 0,
     speed: 6,        // <-- Speed parameter for dino movement
     isOnGround: true
@@ -35,7 +45,7 @@ let dino = {
 let boss = {
     x: 50,
     y: 0,
-    size: 40,
+    size: 50,
     speed: 3,        // <-- Speed parameter for boss movement
     active: false
 };
@@ -155,7 +165,7 @@ function drawBorder() {
 }
 
 function updateGame() {
-    if (game.speedMultiplier >= 3 && !finalChallengeInitiated) {
+    if (game.speedMultiplier >= 2 && !finalChallengeInitiated) {
         finalChallengeInitiated = true;
         finalChallengeTimer = finalChallengeDelay;  // Start the delay timer
         game.obstacles = [];  // Clear existing obstacles
@@ -170,7 +180,7 @@ function updateGame() {
     }
 
     // Increase speed multiplier over time (cap at 3x)
-    if (frameCount % game.speedIncreaseInterval === 0 && game.speedMultiplier < 3) {
+    if (frameCount % game.speedIncreaseInterval === 0 && game.speedMultiplier < 2) {
         game.speedMultiplier += 0.5;
     }
 
@@ -420,13 +430,13 @@ function updateDino() {
 }
 
 function showDino() {
-    fill(255);
-    rect(dino.x, dino.y, dino.size, dino.size);
+    imageMode(CORNER);
+    image(dinoImage, dino.x, dino.y, dino.size, dino.size);
 }
 
 function showBoss() {
-    fill(255, 0, 0);
-    rect(boss.x, boss.y, boss.size, boss.size);
+    imageMode(CORNER);
+    image(bossImage, boss.x, boss.y, boss.size, boss.size);
 }
 
 function createObstacle() {
@@ -491,7 +501,7 @@ function resetGame() {
 
     // Reset boss to initial state
     boss.x = INITIAL_STATE.boss.x;
-    boss.y = height - INITIAL_STATE.boss.size;
+    boss.y = height - boss.size
     boss.speed = INITIAL_STATE.boss.speed;
     boss.active = INITIAL_STATE.boss.active;
 
