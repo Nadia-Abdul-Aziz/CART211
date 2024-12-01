@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emoji Identifier</title>
+    <title>Word Art Generator</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto&display=swap" rel="stylesheet">
     <style>
@@ -26,21 +26,18 @@
 
 <body>
     <div class="container">
-        <h1 class="text-center mt-5" style="color:rgb(211, 211, 0)">[: EMOJI IDENTIFIER :]</h1>
-        <P class="text-center mt-5" style="color:rgb(211, 211, 0)"> This is a database to associate Emojis to emotions!!</P>
-        <p>Choose your emoji!</p>
+        <h1 class="text-center mt-5">Word Art Generator Demo</h1>
         <form id="wordArtForm" class="mt-4">
             <div class="form-group">
-                <label for="EMOJI">EMOJI:</label>
-                <input type="text" id="name" class="form-control" placeholder="Icon goes here!">
+                <label for="name">Name:</label>
+                <input type="text" id="name" class="form-control" placeholder="Enter your name">
             </div>
             <div class="form-group">
-                <label for="Emotion">EMOTION:</label>
-                <textarea id="message" class="form-control" placeholder="Describe your emoji!"></textarea>
+                <label for="message">Message:</label>
+                <textarea id="message" class="form-control" placeholder="Enter your message"></textarea>
             </div>
-            <p>What characteristics should your emoji's description have?</p>
             <div class="form-group">
-                <label for="fontStyle">FONT:</label>
+                <label for="fontStyle">Font Style:</label>
                 <select id="fontStyle" class="form-control">
                     <option value="Arial">Arial</option>
                     <option value="Times New Roman">Times New Roman</option>
@@ -71,13 +68,12 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
 
     <script>
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
             apiKey: "AIzaSyC6Ya5qYyh_50uf-TyrpdfnJribNkPzxMo",
             authDomain: "fireba-61886.firebaseapp.com",
             databaseURL: "https://fireba-61886-default-rtdb.firebaseio.com",
             projectId: "fireba-61886",
-            storageBucket: "fireba-61886.appspot.com",
+            storageBucket: "fireba-61886.firebasestorage.app",
             messagingSenderId: "814088852277",
             appId: "1:814088852277:web:ef6f59dfc465cfba16f27c",
             measurementId: "G-PME17N5NVW"
@@ -88,8 +84,8 @@
         form.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const emoji = document.getElementById('Emoji').value;
-            const emotionLabel = document.getElementById('Emotion label').value;
+            const name = document.getElementById('name').value;
+            const message = document.getElementById('message').value;
             const fontStyle = document.getElementById('fontStyle').value;
             const fontSize = document.getElementById('fontSize').value + 'px';
             const textColor = document.getElementById('textColor').value;
