@@ -26,8 +26,8 @@
 
 <body>
     <div class="container">
-        <h1 class="text-center mt-5">Word Art Generator Demo</h1>
-        <form id="wordArtForm" class="mt-4">
+        <h1 class="text-center mt-5">Settings</h1>
+        <form id="speedForm" class="mt-4">
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" id="name" class="form-control" placeholder="Enter your name">
@@ -47,12 +47,12 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="fontSize">Font Size (px):</label>
-                <input type="number" id="fontSize" class="form-control" value="24">
+                <label for="fontSize">Forward Speed</label>
+                <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
             </div>
             <div class="form-group">
                 <label for="textColor">Text Color:</label>
-                <input type="color" id="textColor" class="form-control">
+                <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
             </div>
             <button type="submit" class="btn btn-primary">Generate Word Art</button>
         </form>
@@ -78,15 +78,12 @@
         };
         firebase.initializeApp(firebaseConfig);
 
-        const form = document.getElementById('wordArtForm');
+        const form = document.getElementById('speedForm');
         form.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const name = document.getElementById('name').value;
-            const message = document.getElementById('message').value;
-            const fontStyle = document.getElementById('fontStyle').value;
-            const fontSize = document.getElementById('fontSize').value + 'px';
-            const textColor = document.getElementById('textColor').value;
+            const forwardSpeed = document.getElementById('name').value;
+            const backSpeed = document.getElementById('message').value;
 
             // Update the preview
             const wordArtPreview = document.getElementById('wordArtPreview');
