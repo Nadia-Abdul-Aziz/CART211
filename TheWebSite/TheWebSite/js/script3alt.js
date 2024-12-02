@@ -700,7 +700,7 @@ function checkAllWebBugOverlaps() {
                 if (player1Tokens <= 0) {
                     gameState = gameWon;
                     //Text to display on game won screen
-                    winReason = 'PLAYER 2 WINS! Player 1 ran out of power...';
+                    winReason = 'APOLLO WINS! Houston got too tired...';
                     return;
                 }
 
@@ -729,7 +729,7 @@ function checkAllWebBugOverlaps() {
 
                 if (player2Tokens <= 0) {
                     gameState = gameWon;
-                    winReason = 'PLAYER 1 WINS! Player 2 ran out of power...';
+                    winReason = 'HOUSTON WINS! Houston has tired Apollo out!';
                     return;
                 }
 
@@ -755,7 +755,7 @@ function checkWinCondition() {
             if (distanceToPlayer2 < (player1.web.tipSize + player2.body.size) / 2) {
                 gameState = gameWon;
                 //text displayed
-                winReason = 'PLAYER 1 WINS! PLAYER 2 WAS DEVOURED!';
+                winReason = 'HOUSTON WINS! APOLLO WAS DEVOURED!';
             }
         }
     }
@@ -767,7 +767,7 @@ function checkWinCondition() {
             let distanceToPlayer1 = dist(player2.web.x, player2.web.y, player1.body.x, player1.body.y);
             if (distanceToPlayer1 < (player2.web.tipSize + player1.body.size) / 2) {
                 gameState = gameWon;
-                winReason = 'PLAYER 2 WINS! PLAYER 1 WAS DEVOURED!';
+                winReason = 'APOLLO WINS! Houston is no more...';
             }
         }
     }
@@ -854,9 +854,9 @@ function initializeGameWon() {
     gameWonTitle.style('margin-bottom', '20px');
 
     // Check if Player 1 won by looking at the winReason text
-    const player1Won = winReason.includes('PLAYER 1 WINS');
+    const player1Won = winReason.includes('HOUSTON WINS');
 
-    let actionButton = createButton(player1Won ? 'Next Level' : 'Try Again');
+    let actionButton = createButton(player1Won ? 'Continue' : 'Play Again');
     actionButton.parent(gameWonElement);
     actionButton.style('font-size', '20px');
     actionButton.style('font-family', 'Courier New');

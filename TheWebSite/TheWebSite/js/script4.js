@@ -94,9 +94,20 @@ function drawBorder() {
 }
 
 function updateGame() {
-    // Draw and move player
-    image(playerImg, player.x + player.width / 2, player.y + player.height / 2,
-        player.width, player.height);
+
+    push();
+
+    // Translate to the center of the player
+    translate(player.x + player.width / 2, player.y + player.height / 2);
+
+    // Rotate 180 degrees (PI radians)
+    rotate(PI);
+
+    // Draw the image (note the adjusted coordinates)
+    image(playerImg, 0, 0, player.width, player.height);
+
+    // Restore the previous transformation state
+    pop();
 
     if (keyIsDown(LEFT_ARROW) && player.x > 0) {
         player.x -= player.speed;
@@ -209,8 +220,8 @@ function initializeGameOver() {
         onComplete: () => {
             new Typed(typedElement.elt, {
                 strings: [
-                    'The Bugs Have Escaped...',
-                    'Houston Will Forever Yearn for His Lost Nourishment...'
+                    'The Bugs Have Made it Through...',
+                    'Houston Will Forever Yearn for His Lost Web...'
                 ],
                 typeSpeed: 40,
                 backSpeed: 30,
@@ -254,7 +265,7 @@ function initializeGameWon() {
     gameWonTitle.style('margin-bottom', '20px');
 
     // Create a link instead of a button
-    let nextPageLink = createA('yesBoss1.html', 'Continue');
+    let nextPageLink = createA('yesBoss2.html', 'Continue');
     nextPageLink.parent(gameWonElement);
     nextPageLink.style('font-size', '20px');
     nextPageLink.style('font-family', 'Courier New');
@@ -267,7 +278,7 @@ function initializeGameWon() {
     nextPageLink.style('display', 'none'); // Initially hidden until typing animation completes
 
     new Typed(gameWonTitle.elt, {
-        strings: ['Houston Has Eaten All the Bugs!'],
+        strings: ['Houston Has Stopped the Bugs!'],
         typeSpeed: 20,
         showCursor: false,
         onComplete: () => {
