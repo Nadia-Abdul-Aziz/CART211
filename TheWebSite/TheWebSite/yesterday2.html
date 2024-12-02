@@ -30,7 +30,7 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            animation: scrollLeft 10s linear infinite;
+            animation: scrollLeft 5s linear infinite;
         }
 
         @keyframes scrollLeft {
@@ -44,27 +44,27 @@
         }
 
         #behold-text {
-            font-size: 60px;
+            font-size: 30px;
             text-align: center;
             display: none;
+            font-weight: bold;
         }
 
         .letter-screen {
             width: 100%;
-            height: 100%;
+            height: 100vh;
             display: none;
-            padding: 4rem;
+            align-items: center;
+            padding: 2rem;
         }
 
         .letter-container {
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
-            position: relative;
         }
 
         .letter-header {
-            position: relative;
             margin-bottom: 2rem;
             border-bottom: 1px solid #333;
             padding-bottom: 0.5rem;
@@ -183,17 +183,17 @@
                     document.getElementById('behold-text').style.display = 'block';
 
                     new Typed('#behold-text', {
-                        strings: ['…a bigger problem.'],
-                        typeSpeed: 100,
+                        strings: ['The sudden alert rattled the web...'],
+                        typeSpeed: 30,
                         showCursor: false,
                         onComplete: function () {
                             setTimeout(() => {
                                 initialScreen.style.display = 'none';
-                                letterScreen.style.display = 'block';
+                                letterScreen.style.display = 'flex';
 
                                 new Typed('#incoming-message', {
                                     strings: ['Incoming Message'],
-                                    typeSpeed: 60,
+                                    typeSpeed: 30,
                                     showCursor: false,
                                     onComplete: function () {
                                         setTimeout(() => {
@@ -204,16 +204,16 @@
                                         new Typed('#letter-text', {
                                             strings: [`Dear Houston,
 
-I hope your web building activities have been swell,
+I trust your web-building is going well,
 
-Given the ongoing bug invasion of your territories, I have received word that your rival Apollo is on the move.
+However, I must warn you, your rival, Apollo, is on the move. 
 
-He plans on preying on your weakened state to feast on the incoming bugs and take over your web!
+Word is, he plans to feast on the bugs in your web and claim it for himself.
 
-He will reach your web soon, please proceed defensively,
+He's almost here. Defend yourself,
 
-Anonymous.`],
-                                            typeSpeed: 40,
+- Anonymous`],
+                                            typeSpeed: 30,
                                             showCursor: false,
                                             onComplete: function () {
                                                 document.getElementById('next-button').style.display = 'block';

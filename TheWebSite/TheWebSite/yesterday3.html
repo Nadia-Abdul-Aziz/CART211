@@ -19,6 +19,7 @@
             margin: 0;
             overflow: hidden;
             position: relative;
+            font-size: 20px;
         }
 
         .sliding-image-left {
@@ -34,11 +35,26 @@
         .sliding-image-right {
             position: absolute;
             right: -50%;
-            width: 30%;
+            width: 35%;
             height: 100%;
             animation: slideInRight 2s ease-out forwards;
             z-index: -1;
             object-fit: contain;
+        }
+
+        .character-label {
+            position: absolute;
+            bottom: 30%;
+            font-size: 20px;
+            z-index: 1;
+        }
+
+        .character-label-left {
+            left: 10%;
+        }
+
+        .character-label-right {
+            right: 10%;
         }
 
         @keyframes slideInLeft {
@@ -73,7 +89,6 @@
         }
 
         #initial-text {
-            font-size: 15px;
             text-align: center;
         }
 
@@ -85,7 +100,7 @@
         }
 
         #next-button {
-            margin-top: 20px;
+            margin-top: 40px;
             opacity: 0;
             transition: opacity 2s ease-in;
         }
@@ -102,12 +117,19 @@
             background-color: white;
             color: black;
         }
+
+        #additional-text {
+            margin-top: 10px;
+        }
     </style>
 </head>
 
 <body>
     <img src="assets/images/rival1.png" alt="Left Character" class="sliding-image-left">
-    <img src="assets/images/homeIcon.png" alt="Right Character" class="sliding-image-right">
+    <!-- <div class="character-label character-label-left">Apollo</div> -->
+
+    <img src="assets/images/angle4.png" alt="Right Character" class="sliding-image-right">
+    <!-- <div class="character-label character-label-right">Houston</div> -->
 
     <a href="index.html" class="home-icon">
         <img src="assets/images/homeIcon.png" alt="Home" width="65" height="65">
@@ -126,14 +148,14 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Initialize the first text
             const firstText = new Typed('#initial-text', {
-                strings: ['Now, with the courage of a colossal beast'],
-                typeSpeed: 50,
+                strings: ['Now, with the courage of a colossal beast,'],
+                typeSpeed: 30,
                 showCursor: false,
                 onComplete: function () {
                     // Initialize the second text after the first is completed
                     const secondText = new Typed('#additional-text', {
-                        strings: ['Houston prepares for battle'],
-                        typeSpeed: 50,
+                        strings: ['Houston prepares for battle.'],
+                        typeSpeed: 30,
                         showCursor: false,
                         onComplete: function () {
                             const nextButton = document.getElementById('next-button');

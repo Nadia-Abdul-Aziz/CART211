@@ -110,9 +110,18 @@
             margin-top: 5px;
         }
 
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
         .button-container {
-            text-align: center;
-            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .button-container a {
@@ -127,6 +136,11 @@
         .button-container a:hover {
             background-color: white;
             color: black;
+        }
+
+        .button-label {
+            margin-top: 10px;
+            font-size: 0.8rem;
         }
 
         @keyframes fadeIn {
@@ -146,17 +160,18 @@
         <img src="assets/images/homeIcon.png" alt="Home">
     </a>
     <div id="title-container">
-        <div class="title-text">Help Houston Defend His Web!</div>
+        <div class="title-text">HOUSTON VS APOLLO</div>
     </div>
     <div class="content-wrapper">
         <div class="instructions">
             <div class="instruction-text">
                 <ul>
-                    <li>Collect Power Tokens to power up your web and reach Apollo!</li>
-                    <li>Don’t Let Your Tokens Reach Zero!</li>
-                    <li>Catch Bugs to grow bigger than Apollo!</li>
-                    <li>Rotate with Arrow Keys (Player 1) or A/D Keys (Player 2)</li>
-                    <li>Shoot Your Web with Up Arrow (Player 1) or S Key (Player 2)</li>
+                    <li>Collect energy tokens to power up your web and reach Apollo!</li>
+                    <li>Don't let your energy reach zero!</li>
+                    <li>Catch bugs to grow bigger than Apollo!</li>
+                    <li>Rotate with arrow keys (Player 1) or A/D keys (Player 2)</li>
+                    <li>Shoot your web with Up Arrow (Player 1) or S Key (Player 2)</li>
+                    <li>Eat your opponent when you are double their size!</li>
                 </ul>
             </div>
         </div>
@@ -164,18 +179,33 @@
             <div class="images">
                 <div class="image-container">
                     <img src="assets/images/Arrows.png" alt="Move with arrow keys">
-                    <p>Move with arrow keys or A/D</p>
+                    <br>
+                    <br>
+                    <p>Rotate with arrow keys or A/D</p>
                 </div>
                 <div class="image-container">
-                    <img src="assets/images/Spacebar.png" alt="Shoot with spacebar">
+                    <img src="assets/images/upArrow.png" alt="Shoot with spacebar">
+                    <br>
+                    <br>
                     <p>Shoot with Up or S key</p>
                 </div>
             </div>
-            <div id="button-container" class="button-container">
-                <a href="duelGame.html">START GAME</a>
-            </div>
-            <div id="button-container" class="button-container">
-                <a href="duelGame.html">START GAME</a>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="button-group">
+                <div class="button-container">
+                    <a href="duelGame.html">START GAME</a>
+                    <br>
+                    <div class="button-label">Play against a friend</div>
+                </div>
+                <div class="button-container">
+                    <a href="duelGame.html">START GAME</a>
+                    <br>
+                    <div class="button-label"> Play against a bot</div>
+                </div>
             </div>
         </div>
     </div>

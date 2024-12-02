@@ -1,46 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- THE HOMEPAGE!!! -->
+<!--HOMEPAGE-->
+<!-- Tried making a stylesheet for this, messed up my entire page, not trying again -->
 
 <head>
-    <!-- scaling of site-->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Page title -->
     <title>THE WEB SITE</title>
 
-    <!-- the stylesheet-->
-    <link href="css/index.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- the libraries-->
-
-    <!-- bootstrap-->
+    <!-- libraries I need-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Typed.js -->
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-
-    <!-- p5.js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+
+    <style>
+        /* Global styling*/
+        body {
+            background-color: black;
+            font-family: 'Courier New', monospace;
+            color: white;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            /*dynamic sizing to viewport size*/
+            overflow: hidden;
+            /*my image is kinda sorta too big so this is needed*/
+        }
+
+        /* Flexbox container*/
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* left and right division of the page */
+        .left-column,
+        .right-column {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Left column additional padding because it looked squished and wrong without it*/
+        .left-column {
+            padding-left: 80px;
+        }
+
+        /* Right column centered content */
+        .right-column {
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+
+        /* spidey home icon */
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            /*Above everything else*/
+        }
+
+        /*response to an unknown bug where my image size was way out of proportion in only this page*/
+        .home-icon img {
+            width: 65px;
+            height: 65px;
+        }
+
+        /* Dropdown menu */
+        .dropdown {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* Removing that ugly default dropdown arrow */
+        .dropdown-toggle::after {
+            display: none;
+        }
+
+        /* the actual square the content lives in */
+        .dropdown-menu {
+            background-color: black;
+            border: 1px solid white;
+        }
+
+        .dropdown-item {
+            color: white;
+        }
+
+        /* the styling of said square */
+        #dropdownMenuButton {
+            background-color: black;
+            width: 54px;
+            height: 54px;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow:
+                /* Glow effect!!!*/
+                0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 30px rgba(255, 255, 255, 0.6),
+                0 0 40px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Rotation for the burger */
+        .rotate {
+            transform: rotate(90deg);
+        }
+
+        /*more random styling*/
+        .custom-button {
+            background-color: black;
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        /*The white square that appears when hovering over an item*/
+        .custom-button:hover {
+            background-color: white;
+            color: black;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Button container margin??*/
+        .button-container {
+            margin-top: 30px;
+        }
+
+        /*web image*/
+        .spider-image {
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+        }
+
+        /* Typography for title and subtitle */
+        #typed-title {
+            font-size: 96px;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        #typed-subtitle {
+            font-size: 30px;
+            line-height: 1.4;
+            margin-bottom: 30px;
+        }
+
+        /* Responsive design for smaller screens (ASKED CLAUDE FOR VALUES AND HELP!!!)*/
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .left-column,
+            .right-column {
+                width: 100%;
+            }
+
+            .left-column {
+                padding: 80px 20px 40px 20px;
+            }
+
+            .spider-image {
+                height: 50vh;
+            }
+
+            #typed-title {
+                font-size: 64px;
+            }
+
+            #typed-subtitle {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- spidey home icon -->
+    <!-- Home icon -->
     <a href="index.html" class="home-icon">
         <img src="assets/images/homeIcon.png" alt="Home">
     </a>
 
-    <!-- Dropdown menu burger-->
+    <!-- Dropdown menu and the content -->
     <div class="dropdown">
-        <!-- toggle -->
         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
             aria-expanded="false">
             <div id="menuIconCanvas"></div>
         </button>
-
-        <!-- the stuff in it -->
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
             <li><a class="dropdown-item" href="settings.html">SETTINGS</a></li>
             <li><a class="dropdown-item" href="underConstruction.html">Intro: TBA</a></li>
@@ -49,75 +208,66 @@
         </ul>
     </div>
 
-    <!-- Main container -->
+    <!-- Main content container -->
     <div class="main-container">
-        <!-- Left column with text and button -->
+        <!-- Left column with the text and button to play-->
         <div class="left-column">
-            <!-- big title, idk what else to call it -->
             <h1 id="typed-title" class="display-1"></h1>
-
-            <!-- smol subtitle, about 20px ish? -->
             <h4 id="typed-subtitle"></h4>
-
-            <!-- Button to play -->
             <div class="button-container">
                 <a href="Bug1.html" class="custom-button" id="nextButton">Start Here</a>
             </div>
         </div>
 
-        <!-- Right column with web -->
+        <!-- Right column with image -->
         <div class="right-column">
             <img src="assets/images/finalWeb.png" alt="visual" class="spider-image">
         </div>
     </div>
 
-    <!--idk if I need this, probably dead code-->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> -->
-
-    <!--JS because I'm lazy for a new doc-->
+    <!-- bootstrap, not sure I need to leave this here since I have it at the top, but idk -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Event listener for when the DOM is fully loaded just in case I need it at some point document.addEventListener('DOMContentLoaded', function () {
-        // Typed.js animation
+        // Event listener for DOM content just in case I need it later// document.addEventListener('DOMContentLoaded', function () {
+        // Typing effect for main title
         new Typed('#typed-title', {
             strings: ['THE WEB'],
             typeSpeed: 100,
             showCursor: false,
-            onComplete: function () {
-                //subtitle when the main title has finished typing (onComplete)
+            onComplete: function () { //wait until the animation is done
                 new Typed('#typed-subtitle', {
                     strings: ['Just the adventures of Houston the itsy-bitsy spider building a web...site.'],
                     typeSpeed: 50,
                     showCursor: false,
                     onComplete: function () {
-                        // button visible only after all typing is done
+                        // Show the button only after typing is done
                         document.getElementById('nextButton').style.opacity = '1';
                     }
                 });
             }
         });
 
-        // Dropdown burger rotation toggle (AI USED TO HELP!!!!!!)
+        // Dropdown menu rotation toggle (ASKED AI FOR HELP!!!!)
         const dropdownToggle = document.querySelector('.dropdown-toggle');
 
         dropdownToggle.addEventListener('click', function () {
             this.classList.toggle('rotate');
         });
 
-        // Remove rotation when clicking outside dropdown
+        // Remove rotation when clicking outside and close the menu
         document.addEventListener('click', function (event) {
             if (!dropdownToggle.contains(event.target)) {
                 dropdownToggle.classList.remove('rotate');
             }
         });
 
-        // p5.js setup function for menu icon canvas
+        // P5.js canvas
         function setup() {
             let canvas = createCanvas(24, 24);
             canvas.parent('menuIconCanvas');
         }
 
-        // p5 drawing the lines for burger
-        // Not worth making an object
+        // the actual drawing of the burger lines
         function draw() {
             background(0);
             stroke(255);

@@ -19,8 +19,8 @@
             position: relative;
         }
 
-        /* New background overlay styles */
-        .background-overlay {
+        /* First background overlay styles */
+        .background-overlay-1 {
             position: fixed;
             top: 0;
             left: 0;
@@ -32,9 +32,25 @@
             opacity: 0;
             animation: fadeIn 10s ease-in forwards;
             z-index: 1;
+            transition: opacity 1s ease-out;
         }
 
-        /* New fade in animation */
+        /* Second background overlay styles */
+        .background-overlay-2 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/images/wind.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 2s ease-in;
+            z-index: 1;
+        }
+
+        /* Fade in animation */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -148,8 +164,11 @@
 </head>
 
 <body>
-    <!-- New background overlay div -->
-    <div class="background-overlay"></div>
+    <!-- First background overlay div -->
+    <div class="background-overlay-1"></div>
+
+    <!-- Second background overlay div -->
+    <div class="background-overlay-2"></div>
 
     <a href="index.html" class="home-icon">
         <img src="assets/images/homeIcon.png" width="65" height="65" alt="Home">
@@ -175,20 +194,36 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const initialText = new Typed('#initial-text', {
-                strings: ['On this crisp October morn...', '...as Houston wove his intricate web'],
-                typeSpeed: 100,
-                backSpeed: 100,
+                strings: ['On this crisp October morn...', 'Houston, the itsy bitsy spider, spun the final threads of his web...'],
+                typeSpeed: 30,
+                backSpeed: 30,
                 showCursor: false,
                 onComplete: function () {
                     setTimeout(() => {
+                        // Completely hide the first background image
+                        const backgroundOverlay1 = document.querySelector('.background-overlay-1');
+                        backgroundOverlay1.style.opacity = '0';
+
+                        // Ensure it's fully removed from view
+                        backgroundOverlay1.style.visibility = 'hidden';
+
                         document.querySelector('.full-screen').style.display = 'none';
                         document.querySelector('.left-column').style.display = 'flex';
                         document.querySelector('.right-column').style.display = 'flex';
 
                         new Typed('#typed-subtitle', {
-                            strings: ['...a tantalizing aroma drifted through the air.'],
-                            typeSpeed: 100,
+                            strings: [' As a tantalizing aroma drifted through the air...'],
+                            typeSpeed: 30,
                             showCursor: false,
+                            preStringTyped: function () {
+                                // Fade in the second background image slightly before the text starts
+                                const backgroundOverlay1 = document.querySelector('.background-overlay-1');
+                                backgroundOverlay1.style.opacity = '0';
+                                backgroundOverlay1.style.visibility = 'hidden';
+
+                                const backgroundOverlay2 = document.querySelector('.background-overlay-2');
+                                backgroundOverlay2.style.opacity = '0.2';
+                            },
                             onComplete: function () {
                                 document.getElementById('next-button').style.display = 'block';
                             }
