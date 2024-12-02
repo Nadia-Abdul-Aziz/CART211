@@ -6,15 +6,21 @@ function setup() {
     canvas.position(0, 0);
     canvas.style('pointer-events', 'none'); // Prevent interaction
     lineLength = 50; // Initial line length
+
+    // Wait for the image to load before accessing its dimensions
+    const spiderImage = document.getElementById('spiderImage');
+    spiderImage.onload = drawSpiderLine;
 }
 
-function draw() {
-    clear(); // Clear canvas to avoid trails
+function drawSpiderLine() {
     const spiderImage = document.getElementById('spiderImage');
+    if (!spiderImage) return; // Handle case where image is not found
+
     const rect = spiderImage.getBoundingClientRect();
     const anchorX = rect.right - rect.width / 2;
     const anchorY = rect.top;
 
+    clear(); // Clear canvas to avoid trails
     stroke(255);
     strokeWeight(2);
     line(anchorX, anchorY, anchorX, anchorY + lineLength);
@@ -27,4 +33,8 @@ function draw() {
         lineLength -= 2;
         if (lineLength < 50) growing = true;
     }
+}
+
+function draw() {
+    //This function is now empty, as the drawing is handled by drawSpiderLine after the image loads.
 }
