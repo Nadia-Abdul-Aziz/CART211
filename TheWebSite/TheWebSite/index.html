@@ -1,178 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<!-- THE HOMEPAGE!!! -->
 
 <head>
-    <title>THE WEB SITE</title>
+    <!-- scaling of site-->
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Page title -->
+    <title>THE WEB SITE</title>
+
+    <!-- the stylesheet-->
+    <link href="css/index.css" rel="stylesheet" />
+
+    <!-- the libraries-->
+
+    <!-- bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Typed.js -->
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+    <!-- p5.js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-
-    <style>
-        body {
-            background-color: black;
-            font-family: 'Courier New', monospace;
-            color: white;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .main-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .left-column,
-        .right-column {
-            width: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .left-column {
-            padding-left: 80px;
-        }
-
-        .right-column {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-        }
-
-        .home-icon {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .home-icon img {
-            width: 65px;
-            height: 65px;
-        }
-
-        .dropdown {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .dropdown-toggle::after {
-            display: none;
-        }
-
-        .dropdown-menu {
-            background-color: black;
-            border: 1px solid white;
-        }
-
-        .dropdown-item {
-            color: white;
-        }
-
-        #dropdownMenuButton {
-            background-color: black;
-            width: 54px;
-            height: 54px;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
-                0 0 30px rgba(255, 255, 255, 0.6),
-                0 0 40px rgba(255, 255, 255, 0.4);
-        }
-
-        .rotate {
-            transform: rotate(90deg);
-        }
-
-        .custom-button {
-            background-color: black;
-            color: white;
-            border: 1px solid white;
-            padding: 8px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .custom-button:hover {
-            background-color: white;
-            color: black;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-        }
-
-        .button-container {
-            margin-top: 30px;
-        }
-
-        .spider-image {
-            width: 100%;
-            height: 100vh;
-            object-fit: cover;
-        }
-
-        #typed-title {
-            font-size: 6rem;
-            margin-bottom: 20px;
-            line-height: 1;
-        }
-
-        #typed-subtitle {
-            font-size: 1.8rem;
-            line-height: 1.4;
-            margin-bottom: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .main-container {
-                flex-direction: column;
-            }
-
-            .left-column,
-            .right-column {
-                width: 100%;
-            }
-
-            .left-column {
-                padding: 80px 20px 40px 20px;
-            }
-
-            .spider-image {
-                height: 50vh;
-            }
-
-            #typed-title {
-                font-size: 4rem;
-            }
-
-            #typed-subtitle {
-                font-size: 1.4rem;
-            }
-        }
-    </style>
 </head>
 
 <body>
+    <!-- spidey home icon -->
     <a href="index.html" class="home-icon">
         <img src="assets/images/homeIcon.png" alt="Home">
     </a>
 
+    <!-- Dropdown menu burger-->
     <div class="dropdown">
+        <!-- toggle -->
         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
             aria-expanded="false">
             <div id="menuIconCanvas"></div>
         </button>
+
+        <!-- the stuff in it -->
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
             <li><a class="dropdown-item" href="settings.html">SETTINGS</a></li>
             <li><a class="dropdown-item" href="underConstruction.html">Intro: TBA</a></li>
@@ -181,57 +49,75 @@
         </ul>
     </div>
 
+    <!-- Main container -->
     <div class="main-container">
+        <!-- Left column with text and button -->
         <div class="left-column">
+            <!-- big title, idk what else to call it -->
             <h1 id="typed-title" class="display-1"></h1>
+
+            <!-- smol subtitle, about 20px ish? -->
             <h4 id="typed-subtitle"></h4>
+
+            <!-- Button to play -->
             <div class="button-container">
                 <a href="Bug1.html" class="custom-button" id="nextButton">Start Here</a>
             </div>
         </div>
+
+        <!-- Right column with web -->
         <div class="right-column">
             <img src="assets/images/finalWeb.png" alt="visual" class="spider-image">
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/spiderLine.js"></script>
+    <!--idk if I need this, probably dead code-->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> -->
+
+    <!--JS because I'm lazy for a new doc-->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            new Typed('#typed-title', {
-                strings: ['THE WEB'],
-                typeSpeed: 100,
-                showCursor: false,
-                onComplete: function () {
-                    new Typed('#typed-subtitle', {
-                        strings: ['Just the adventures of Houston the itsy-bitsy spider building a web...site.'],
-                        typeSpeed: 50,
-                        showCursor: false,
-                        onComplete: function () {
-                            document.getElementById('nextButton').style.opacity = '1';
-                        }
-                    });
-                }
-            });
-
-            const dropdownToggle = document.querySelector('.dropdown-toggle');
-
-            dropdownToggle.addEventListener('click', function () {
-                this.classList.toggle('rotate');
-            });
-
-            document.addEventListener('click', function (event) {
-                if (!dropdownToggle.contains(event.target)) {
-                    dropdownToggle.classList.remove('rotate');
-                }
-            });
+        // Event listener for when the DOM is fully loaded just in case I need it at some point document.addEventListener('DOMContentLoaded', function () {
+        // Typed.js animation
+        new Typed('#typed-title', {
+            strings: ['THE WEB'],
+            typeSpeed: 100,
+            showCursor: false,
+            onComplete: function () {
+                //subtitle when the main title has finished typing (onComplete)
+                new Typed('#typed-subtitle', {
+                    strings: ['Just the adventures of Houston the itsy-bitsy spider building a web...site.'],
+                    typeSpeed: 50,
+                    showCursor: false,
+                    onComplete: function () {
+                        // button visible only after all typing is done
+                        document.getElementById('nextButton').style.opacity = '1';
+                    }
+                });
+            }
         });
 
+        // Dropdown burger rotation toggle (AI USED TO HELP!!!!!!)
+        const dropdownToggle = document.querySelector('.dropdown-toggle');
+
+        dropdownToggle.addEventListener('click', function () {
+            this.classList.toggle('rotate');
+        });
+
+        // Remove rotation when clicking outside dropdown
+        document.addEventListener('click', function (event) {
+            if (!dropdownToggle.contains(event.target)) {
+                dropdownToggle.classList.remove('rotate');
+            }
+        });
+
+        // p5.js setup function for menu icon canvas
         function setup() {
             let canvas = createCanvas(24, 24);
             canvas.parent('menuIconCanvas');
         }
 
+        // p5 drawing the lines for burger
+        // Not worth making an object
         function draw() {
             background(0);
             stroke(255);
