@@ -1,137 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Under Construction</title>
-    <style>
-        body {
-            background-color: black;
-            display: flex;
-            font-family: 'Courier New', monospace;
-            color: white;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .full-screen {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            gap: 20px;
-            position: relative;
-        }
-
-        .home-icon {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 10000;
-            /* Increase z-index to ensure it's above other elements */
-            visibility: visible;
-            /* Ensure it's visible */
-        }
-
-        #initial-text {
-            font-size: 20px;
-            text-align: center;
-            z-index: 1;
-            /* Keep this on top of the canvas */
-        }
-
-        #canvas-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            /* Canvas stays in the background */
-        }
-    </style>
+    <!-- Link to CSS stylesheet -->
+    <link rel="stylesheet" href="css/underConstruction.css">
 </head>
 
 <body>
+    <!-- Icon with a link back to home -->
     <a href="index.html" class="home-icon">
         <img src="assets/images/homeIcon.png" width="65" height="65" alt="Home">
     </a>
+
+    <!-- Full-screen container for content, dynamic sizing!!! -->
     <div class="full-screen">
+        <!-- Container for all typed.js -->
         <div id="initial-text"></div>
+        <!-- Container for all p5-->
         <div id="canvas-container"></div>
     </div>
 
+    <!-- libraries I need -->
+    <!-- p5-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <!-- Typed.js-->
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+    <!--Javascript...bcz I don't need another file to deal with smh-->
     <script>
-        let movingPoint;
-        let previousPos;
+
+        //Variables for movement
+        //Undefined for now
+        let movingPoint; //current location
+        let previousPos; //storing previous location to create the trail
 
         function setup() {
-            const canvas = createCanvas(windowWidth, windowHeight);
+            const canvas = createCanvas(windowWidth, windowHeight); //DYNAMIC SIZING YAAAAYYYY
+            // link to the div from earlier
             canvas.parent('canvas-container');
-            background(0);
 
+            // Initialize moving point with initial position and velocity
             movingPoint = {
                 pos: createVector(0, 0),
                 vel: createVector(5, 3)
             };
 
-            // Initialize previousPos to the starting position
+            // Create a copy of the initial position, essentially duplicating
             previousPos = movingPoint.pos.copy();
         }
 
+        //Modify line position and velocity
         function update() {
-            // Move the point as before
-            movingPoint.pos.add(movingPoint.vel);
+            // Update position based on velocity + randomize
+            movingPoint.pos.x += movingPoint.vel.x + random(-5, 5);
+            movingPoint.pos.y += movingPoint.vel.y + random(-5, 5);
 
-            // Introduce a random offset to the position and velocity
+            // Randomize velocity
             movingPoint.vel.x += random(-1, 0.8);
             movingPoint.vel.y += random(-1, 0.8);
 
-            movingPoint.pos.x += random(-5, 5);
-            movingPoint.pos.y += random(-5, 5);
-
-            // Ensure the position stays within the canvas bounds
+            // Constrain that bad boi
             movingPoint.pos.x = constrain(movingPoint.pos.x, 0, width);
             movingPoint.pos.y = constrain(movingPoint.pos.y, 0, height);
 
-            // Bounce off the edges of the canvas (invert velocity when touching edges)
+            // Boing Boing when hitting borders
             if (movingPoint.pos.x === 0 || movingPoint.pos.x === width) {
-                movingPoint.vel.x *= -1;
+                movingPoint.vel.x *= -1; //switch to opppsite direction
             }
             if (movingPoint.pos.y === 0 || movingPoint.pos.y === height) {
                 movingPoint.vel.y *= -1;
             }
         }
 
+        //frame by frame updating
         function draw() {
-            // Draw a line from the previous position to the current position
-            stroke(100);
-            strokeWeight(1);  // Adjust line thickness as needed
-            line(previousPos.x, previousPos.y, movingPoint.pos.x, movingPoint.pos.y);
-
-            // Update the previous position to the current position
-            previousPos = movingPoint.pos.copy();
-
+            drawLine();
             update();
         }
 
-        // Resize the canvas when the window size changes
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-            background(0);
+        //drawing the actual line
+        function drawLine() {
+            // Draw from previous position to current pos
+            stroke(100);
+            strokeWeight(1);
+            line(previousPos.x, previousPos.y, movingPoint.pos.x, movingPoint.pos.y);
+            // Update previous position for next frame
+            previousPos = movingPoint.pos.copy();
         }
 
-        // Typed.js initialization
-        document.addEventListener('DOMContentLoaded', function () {
-            const initialText = new Typed('#initial-text', {
-                strings: ['Under Construction...'],
-                typeSpeed: 50,
-                showCursor: false,
-            });
+        // Sizing bug fix??? might be dead code atp, but I'm not about remove it and find out.
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+
+        //Initialize Typed.js
+        //Don't really need a listener, but just in case = document.addEventListener('DOMContentLoaded', function () {
+        const initialText = new Typed('#initial-text', {
+            strings: ['Under Construction...'],
+            typeSpeed: 50,
+            //GET OUT OF HERE YOU UGLY CURSOR
+            showCursor: false,
         });
     </script>
 </body>
