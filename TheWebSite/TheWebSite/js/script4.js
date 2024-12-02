@@ -278,7 +278,7 @@ function initializeGameWon() {
     nextPageLink.style('display', 'none'); // Initially hidden until typing animation completes
 
     new Typed(gameWonTitle.elt, {
-        strings: ['Houston Has Stopped the Bugs!'],
+        strings: ['Houston Has Stopped The Bugs!'],
         typeSpeed: 20,
         showCursor: false,
         onComplete: () => {

@@ -15,6 +15,32 @@
             overflow: hidden;
         }
 
+        /* Background overlay styles */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/images/web.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            animation: fadeIn 5s ease-in forwards;
+            z-index: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 0.5;
+            }
+        }
+
         .full-screen {
             width: 100%;
             height: 100%;
@@ -26,6 +52,7 @@
             top: 0;
             left: 0;
             transition: opacity 1s ease-in-out;
+            z-index: 2;
         }
 
         #initial-screen {
@@ -59,10 +86,8 @@
             color: white;
             text-align: center;
             width: 160px;
-            /* Match button width */
             line-height: 1.2;
         }
-
 
         #buttons-container {
             margin-top: 20px;
@@ -78,7 +103,6 @@
             border: 1px solid white;
             padding: 10px 20px;
             width: 160px;
-            /* Fixed width for buttons */
             text-align: center;
             transition: background-color 0.3s, color 0.3s;
             box-sizing: border-box;
@@ -98,6 +122,8 @@
 </head>
 
 <body>
+    <!-- Background overlay div -->
+    <div class="background-overlay"></div>
 
     <div id="initial-screen" class="full-screen">
         <div id="initial-text"></div>
@@ -184,7 +210,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const firstText = new Typed('#initial-text', {
                 strings: ["With a swift flick of his silk...", "...Houston defeats the giant", ""],
-                typeSpeed: 50,
+                typeSpeed: 30,
                 backSpeed: 30,
                 showCursor: false,
                 onComplete: function () {
@@ -192,7 +218,7 @@
                         const initialTextElement = document.getElementById('initial-text');
                         new Typed('#initial-text', {
                             strings: ['Even with danger resolved, adventure always calls again'],
-                            typeSpeed: 50,
+                            typeSpeed: 30,
                             backSpeed: 30,
                             showCursor: false,
                             onComplete: function () {
@@ -202,10 +228,15 @@
                                     setTimeout(() => {
                                         const initialScreen = document.getElementById('initial-screen');
                                         const completionScreen = document.getElementById('completion-screen');
+                                        const backgroundOverlay = document.querySelector('.background-overlay');
 
                                         initialScreen.style.opacity = '0';
                                         completionScreen.style.opacity = '1';
                                         completionScreen.style.pointerEvents = 'auto';
+
+                                        // Hide the background overlay
+                                        backgroundOverlay.style.opacity = '0';
+                                        backgroundOverlay.style.visibility = 'hidden';
 
                                         setTimeout(() => {
                                             loop();

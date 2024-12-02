@@ -409,7 +409,7 @@ function initializeGameWon() {
     nextPageLink.style('display', 'none'); // Initially hidden until typing animation completes
 
     new Typed(gameWonTitle.elt, {
-        strings: ['You Led the Chase Right Into the Trap!'],
+        strings: ['You Led Bugzilla Right Into the Trap!'],
         typeSpeed: 20,
         showCursor: false,
         onComplete: () => {
