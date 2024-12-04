@@ -1,4 +1,3 @@
-
 /**
  * Houston's Chase
  * 
@@ -10,124 +9,111 @@
 
 
 
-//Game states
-const GAME_PLAYING = 'playing';
-const GAME_OVER = 'game over';
-const GAME_WON = 'game won';
-const FINAL_CHALLENGE = 'final challenge';
+//states
+const GAME_PLAYING = 'playing';    
+const GAME_OVER = 'game over';      
+const GAME_WON = 'game won';     
+const FINAL_CHALLENGE = 'final challenge'; 
 
-//Images
-let dinoImage;
-let bossImage;
+//images
+let spiderImage;  
+let bossImage;      
 
 function preload() {
-    // Replace these with actual image paths 
-    dinoImage = loadImage('assets/images/angle5.png');
-    bossImage = loadImage('assets/images/Boss.png');
+    // Preload game images before the game starts
+    spiderImage = loadImage('assets/images/angle5.png'); 
+    bossImage = loadImage('assets/images/Boss.png');    
 }
 
-// Current game state
+// Initialize the current game state to playing
 let gameState = GAME_PLAYING;
 
-// For typed.js
+// Typed.js related variables 
 let typed;
-let gameOverInitialized = false;
-let gameWonInitialized = false;
+let gameOverInitialized = false;  
+let gameWonInitialized = false;   
 
-//Final challenge delay variables
-let finalChallengeDelay = 100; // 3 seconds * 60 frames
-let finalChallengeTimer = 0;
+// Variables for managing the final challenge delay
+let finalChallengeDelay = 100; // 3 seconds * 60 frames 
+let finalChallengeTimer = 0;   // Timer to track final challenge start
 
-// Background motion lines
+// Array to store background motion lines for visual effect
 let backgroundLines = [];
 
-// Final challenge state
-let finalChallengeInitiated = false;
-let finalObstacle = null;
+//for final challenge state
+let finalChallengeInitiated = false; 
+let finalObstacle = null;         
 
-let dino = {
-    x: 150,
-    y: 0,
-    size: 50,
-    ySpeed: 0,
-    speed: 6,        // <-- Speed parameter for dino movement
-    isOnGround: true
+// Player object
+let spider = {
+    x: 150,        
+    y: 0,          
+    size: 50,       
+    ySpeed: 0,      
+    speed: 6,       
+    isOnGround: true //track if spider is on the ground, else he was floating
 };
 
+// Boss object
 let boss = {
-    x: 50,
-    y: 0,
-    size: 50,
-    speed: 3,        // <-- Speed parameter for boss movement
-    active: false
+    x: 50,       
+    y: 0,            
+    size: 50,       
+    speed: 3,       
+    active: false   //initially doesn't move 
 };
 
+// Game configuration
 let game = {
-    gravity: 0.6,    // <-- Gravity parameter affects jump physics
-    obstacles: [],
-    delayTime: 3 * 60,
-    speedMultiplier: 1,  // <-- Global speed multiplier
-    speedIncreaseInterval: 300  // <-- How often speed increases
+    gravity: 0.6,                // Gravity effect for jumping mechanics
+    obstacles: [],                // Array to store obstacles
+    delayTime: 3 * 60,            // Delay before boss becomes active
+    speedMultiplier: 1,           // Global speed multiplier
+    speedIncreaseInterval: 300    // Interval for increasing game speed
 };
 
-// Store initial values for proper reset
+// Store initial game state for proper reset functionality
+//GAME WAS NOT RESETTING PROPERLY SO CLAUDE DID THIS!!!
 const INITIAL_STATE = {
-    dino: {
-        x: 150,
-        y: 0,
-        size: 40,
-        ySpeed: 0,
-        speed: 6,
-        isOnGround: true
-    },
-    boss: {
-        x: 50,
-        y: 0,
-        size: 40,
-        speed: 3,
-        active: false
-    },
-    game: {
-        gravity: 0.6,
-        obstacles: [],
-        delayTime: 3 * 60,
-        speedMultiplier: 1,
-        speedIncreaseInterval: 300
-    }
+    spider: { /* initial spider properties */ },
+    boss: { /* initial boss properties */ },
+    game: { /* initial game properties */ }
 };
 
 function setup() {
+    // Initialize the game canvas and set initial positions
     createCanvas(640, 480);
-    dino.y = height - dino.size;
-    boss.y = height - boss.size;
-    game.obstacles.push(createObstacle());
+    spider.y = height - spider.size;  // Position spider at bottom of screen
+    boss.y = height - boss.size;       // Position boss at bottom of screen
+    game.obstacles.push(createObstacle());  // Create initial obstacle
 
-    // Initialize background lines
+    // Initialize background motion lines
     initializeBackgroundLines();
 }
 
+// Function to initialize background motion lines for visual effect
 function initializeBackgroundLines() {
-    backgroundLines = [];
+    backgroundLines = [];  // Reset background lines array
+    // Create 20 random background lines with varying properties
     for (let i = 0; i < 20; i++) {
         backgroundLines.push({
-            x: random(width),
-            y: random(height - 80),
-            length: random(20, 60),
-            speed: random(3, 6)
+            x: random(width),        // Random horizontal starting position
+            y: random(height - 80),  // Random vertical position (leaving bottom space)
+            length: random(20, 60),  // Random line length
+            speed: random(3, 6)      // Random movement speed
         });
     }
 }
 
 function draw() {
-    background("black");
-
-    // Draw motion lines first
+    background("black"); 
     drawMotionLines();
     drawBorder();
 
+    // Game state switch
     switch (gameState) {
         case GAME_PLAYING:
-            updateGame();
+            updateGame();  
             break;
         case GAME_OVER:
             if (!gameOverInitialized) {
@@ -144,19 +130,20 @@ function draw() {
     }
 }
 
+// Function to draw moving background lines
 function drawMotionLines() {
-    stroke(255, 40);  // White with 40/255 opacity
-    strokeWeight(1);
+    stroke(255, 40);  
+    strokeWeight(1);  
 
     for (let line of backgroundLines) {
-        // Update line position
+        // Move line to the left based on its speed and game speed multiplier
         line.x -= line.speed * game.speedMultiplier;
 
-        // Reset line when it goes off screen
+        // Reset line when it moves off the left side of the screen
         if (line.x + line.length < 0) {
-            line.x = width;
-            line.y = random(height - 80);
-            line.length = random(20, 60);
+            line.x = width;  
+            line.y = random(height - 80);  // Randomize vertical position
+            line.length = random(20, 60);  // Randomize line length
         }
 
         // Draw the line
@@ -167,164 +154,182 @@ function drawMotionLines() {
     }
 }
 
+// Function to draw a white border around the game canvas
 function drawBorder() {
-    push();
-    noFill();
-    stroke(255);
-    strokeWeight(5);
+    push(); 
+    noFill(); 
+    stroke(255); 
+    strokeWeight(5); 
     rect(0, 0, width, height);
-    pop();
+    pop(); 
 }
 
+
 function updateGame() {
+    // Initiate final challenge when speed reaches 2x
     if (game.speedMultiplier >= 2 && !finalChallengeInitiated) {
         finalChallengeInitiated = true;
-        finalChallengeTimer = finalChallengeDelay;  // Start the delay timer
+        finalChallengeTimer = finalChallengeDelay; 
         game.obstacles = [];  // Clear existing obstacles
     }
 
-    // Handle final challenge delay and creation
+    // Handle final challenge delay and obstacle creation
     if (finalChallengeInitiated && finalObstacle === null) {
         finalChallengeTimer--;
         if (finalChallengeTimer <= 0) {
-            createFinalObstacle();
+            createFinalObstacle();  // Create final obstacle when timer expires
         }
     }
 
-    // Increase speed multiplier over time (cap at 3x)
+    // Gradually increase game speed (cap at 2x)
     if (frameCount % game.speedIncreaseInterval === 0 && game.speedMultiplier < 2) {
         game.speedMultiplier += 0.5;
     }
 
-    // Start boss movement after delay
+    // Activate boss movement after initial delay
     if (frameCount > game.delayTime) {
         boss.active = true;
     }
 
-    // Player movement
-    if (keyIsDown(RIGHT_ARROW) && dino.x < width - dino.size) {
-        dino.x += dino.speed;
+    // Player movement controls
+    // Move right
+    if (keyIsDown(RIGHT_ARROW) && spider.x < width - spider.size) {
+        spider.x += spider.speed;
     }
-    else if (keyIsDown(LEFT_ARROW) && dino.x > 0) {
-        dino.x -= dino.speed;
-    }
-
-    // Jumping
-    if (keyIsDown(32) && dino.isOnGround) {
-        dino.ySpeed = -12;
-        dino.isOnGround = false;
+    // Move left
+    else if (keyIsDown(LEFT_ARROW) && spider.x > 0) {
+        spider.x -= spider.speed;
     }
 
-    // Boss movement
+    // Jumping 
+    if (keyIsDown(32) && spider.isOnGround) {  // Spacebar
+        spider.ySpeed = -12;
+        spider.isOnGround = false;
+    }
+
+    // Boss movement tracking player
     if (boss.active) {
-        if (boss.x < dino.x) {
-            boss.x += boss.speed;
-        } else if (boss.x > dino.x) {
-            boss.x -= boss.speed;
+        if (boss.x < spider.x) {
+            boss.x += boss.speed;  // Move right towards player
+        } else if (boss.x > spider.x) {
+            boss.x -= boss.speed;  // Move left towards player
         }
     }
 
-    updateDino();
-    showDino();
+    // Update player and boss positions
+    updateSpider();
+    showSpider();
     showBoss();
 
-    // Check boss collision
-    if (checkBossCollision() && dino.isOnGround) {
+    // Check for boss collision with player
+    if (checkBossCollision() && spider.isOnGround) {
         gameState = GAME_OVER;
     }
 
-    // Update and show final obstacle if it exists
+    // Final obstacle logic
     if (finalObstacle) {
         updateFinalObstacle();
         showFinalObstacle();
 
-        // Check if boss hits final obstacle
+        // Check if boss hits final obstacle, trigger game won
         if (checkBossFinalObstacleCollision()) {
             gameState = GAME_WON;
         }
 
-        // Check if player hits final obstacle
+        // Check if player hits final obstacle, trigger game lost
         if (checkPlayerFinalObstacleCollision()) {
             gameState = GAME_OVER;
         }
     }
 
-    // Create new regular obstacles only if final challenge hasn't started
+    // Create new obstacles
     if (!finalChallengeInitiated && frameCount % 90 === 0) {
         game.obstacles.push(createObstacle());
     }
 
-    // Update regular obstacles
+    // Update and check collision with regular obstacles
+    //CLAUDE USED!!
     for (let i = game.obstacles.length - 1; i >= 0; i--) {
         updateObstacle(game.obstacles[i]);
         showObstacle(game.obstacles[i]);
 
+        // Check if player collides with obstacle
         if (checkCollision(game.obstacles[i])) {
             gameState = GAME_OVER;
         }
 
+        // Remove obstacles that have moved off-screen
         if (game.obstacles[i].x + game.obstacles[i].base < 0) {
             game.obstacles.splice(i, 1);
         }
     }
 
-    // Display speed
-    textSize(20);
-    fill(255);
-    noStroke();
-    text('Speed: ' + game.speedMultiplier.toFixed(1) + 'x', 10, 30);
+    // // Display current game speed text, not needed, commented out
+    // textSize(20);
+    // fill(255);
+    // noStroke();
+    // text('Speed: ' + game.speedMultiplier.toFixed(1) + 'x', 10, 30);
 }
 
+//the mountain
 function createFinalObstacle() {
     finalObstacle = {
-        x: width,
-        y: height - 100,  // Higher than regular obstacles
-        base: 60,         // Wider than regular obstacles
-        height: 80,      // Taller than regular obstacles, reduced height
-        speed: 2          // Slower than regular obstacles
+        x: width,                 // Start at right edge of screen
+        y: height - 100,          // Positioned higher than regular obstacles
+        base: 60,                 // Wider than regular obstacles
+        height: 80,               // Taller obstacle height
+        speed: 2                  // Slower movement speed
     };
 
-    // Clear existing obstacles
+    // get rid of existing obstacles
     game.obstacles = [];
 }
 
+// Update the position of the final obstacle
 function updateFinalObstacle() {
     if (finalObstacle) {
+        // Move obstacle left based on game speed
         finalObstacle.x -= finalObstacle.speed * game.speedMultiplier;
     }
 }
 
+// Draw the mountain
 function showFinalObstacle() {
     if (finalObstacle) {
-        fill(255, 215, 0);  // Gold color for final obstacle
+        fill(255, 215, 0);  // yellow
         triangle(
-            finalObstacle.x, height,
-            finalObstacle.x + finalObstacle.base / 2, finalObstacle.y,
-            finalObstacle.x + finalObstacle.base, height
+            finalObstacle.x, height,  
+            finalObstacle.x + finalObstacle.base / 2, finalObstacle.y,  
+            finalObstacle.x + finalObstacle.base, height 
         );
     }
 }
 
+// Check if boss collides with final obstacle
+// CLAUDE HELPED!!!
 function checkBossFinalObstacleCollision() {
     if (!finalObstacle) return false;
 
     return (
-        boss.x < finalObstacle.x + finalObstacle.base &&
-        boss.x + boss.size > finalObstacle.x &&
-        boss.y + boss.size > finalObstacle.y
+        boss.x < finalObstacle.x + finalObstacle.base &&  // Right side of boss is left of obstacle's right
+        boss.x + boss.size > finalObstacle.x &&           // Left side of boss is right of obstacle's left
+        boss.y + boss.size > finalObstacle.y              // Boss is below obstacle's top
     );
 }
 
+// Check if player collides with final obstacle
 function checkPlayerFinalObstacleCollision() {
     if (!finalObstacle) return false;
 
     return (
-        dino.x < finalObstacle.x + finalObstacle.base &&
-        dino.x + dino.size > finalObstacle.x &&
-        dino.y + dino.size > finalObstacle.y
+        spider.x < finalObstacle.x + finalObstacle.base &&  // Right side of spider is left of obstacle's right
+        spider.x + spider.size > finalObstacle.x &&         // Left side of spider is right of obstacle's left
+        spider.y + spider.size > finalObstacle.y            // Spider is below obstacle's top
     );
 }
 
+// Initialize game over screen with typed text animations
+//Same as all other ones
 function initializeGameOver() {
     let gameOverElement = createDiv('');
     gameOverElement.position(0, 0);
@@ -407,7 +412,6 @@ function initializeGameWon() {
     gameWonTitle.style('font-size', '20px');
     gameWonTitle.style('margin-bottom', '20px');
 
-    // Create a link instead of a button
     let nextPageLink = createA('yesWinner.html', 'Continue');
     nextPageLink.parent(gameWonElement);
     nextPageLink.style('font-size', '20px');
@@ -418,100 +422,112 @@ function initializeGameWon() {
     nextPageLink.style('background-color', 'white');
     nextPageLink.style('color', 'black');
     nextPageLink.style('text-decoration', 'none');
-    nextPageLink.style('display', 'none'); // Initially hidden until typing animation completes
+    nextPageLink.style('display', 'none'); 
 
     new Typed(gameWonTitle.elt, {
         strings: ['You Led Bugzilla Right Into the Trap!'],
         typeSpeed: 20,
         showCursor: false,
         onComplete: () => {
+            // Show continue link after typing
             nextPageLink.style('display', 'block');
         }
     });
 }
 
-function updateDino() {
-    dino.y += dino.ySpeed;
-    dino.ySpeed += game.gravity;
+// move houston vertically and apply gravity
+function updateSpider() {
+    spider.y += spider.ySpeed;  
+    spider.ySpeed += game.gravity;  
 
-    if (dino.y >= height - dino.size) {
-        dino.y = height - dino.size;
-        dino.ySpeed = 0;
-        dino.isOnGround = true;
+    // Check ground collision
+    //fixing that bug that houston was either floating or below canvas
+    if (spider.y >= height - spider.size) {
+        spider.y = height - spider.size;  // Prevent going below ground
+        spider.ySpeed = 0;  // Stop vertical movement
+        spider.isOnGround = true;  // Reset ground flag
     }
 }
 
-function showDino() {
+// Draw houston image
+function showSpider() {
     imageMode(CORNER);
-    image(dinoImage, dino.x, dino.y, dino.size, dino.size);
+    image(spiderImage, spider.x, spider.y, spider.size, spider.size);
 }
 
+// Draw bugzilla image
 function showBoss() {
     imageMode(CORNER);
     image(bossImage, boss.x, boss.y, boss.size, boss.size);
 }
 
+// Create a new obstacle with random properties
 function createObstacle() {
-    let base = random(10, 30);
-    let height = random(30, 70);
     return {
-        x: width,
-        y: height - 20,
-        base: base,
-        height: height,
-        speed: 4
+        x: width,  // Start at right edge of screen
+        y: height - 20,  // Bottom positioning
+        base: random(10, 30),  // Random base width
+        height: random(30, 70),  // Random height
+        speed: 4  // Movement speed
     };
 }
 
+// Update obstacle position based on game speed
 function updateObstacle(obstacle) {
     obstacle.x -= obstacle.speed * game.speedMultiplier;
 }
 
+// Draw obstacle as a white triangle
 function showObstacle(obstacle) {
     fill(255);
     triangle(
         obstacle.x, height,
         obstacle.x + obstacle.base / 2, height - obstacle.height,
-        obstacle.x + obstacle.base, height
+        obstacle.x + obstacle.base, height  
     );
 }
 
+// Check collision between spider and boss
 function checkBossCollision() {
     return (
-        dino.x < boss.x + boss.size &&
-        dino.x + dino.size > boss.x &&
-        dino.y + dino.size > boss.y
+        spider.x < boss.x + boss.size &&
+        spider.x + spider.size > boss.x &&
+        spider.y + spider.size > boss.y
     );
 }
 
+// Check collision between spider and an obstacle
 function checkCollision(obstacle) {
     return (
-        dino.x < obstacle.x + obstacle.base &&
-        dino.x + dino.size > obstacle.x &&
-        dino.y + dino.size > height - obstacle.height
+        spider.x < obstacle.x + obstacle.base &&
+        spider.x + spider.size > obstacle.x &&
+        spider.y + spider.size > height - obstacle.height
     );
 }
 
+// Handle spacebar press for game restart
 function keyPressed() {
     if (keyCode === 32 && gameState === GAME_OVER) {
         resetGame();
     }
 }
 
+// Reset entire game to initial state
+//ASKED CLAUDE TO REDO THIS BECAUSE MY GAME WAS NOT RESETTING RIGHT!!
 function resetGame() {
     // Reset game state
     gameState = GAME_PLAYING;
     gameOverInitialized = false;
     gameWonInitialized = false;
 
-    // Reset player to initial state
-    dino.x = INITIAL_STATE.dino.x;
-    dino.y = height - INITIAL_STATE.dino.size;
-    dino.ySpeed = INITIAL_STATE.dino.ySpeed;
-    dino.speed = INITIAL_STATE.dino.speed;
-    dino.isOnGround = INITIAL_STATE.dino.isOnGround;
+    // Reset player (spider) to initial position and properties
+    spider.x = INITIAL_STATE.spider.x;
+    spider.y = height - INITIAL_STATE.spider.size;
+    spider.ySpeed = INITIAL_STATE.spider.ySpeed;
+    spider.speed = INITIAL_STATE.spider.speed;
+    spider.isOnGround = INITIAL_STATE.spider.isOnGround;
 
-    // Reset boss to initial state
+    // Reset boss to initial position and properties
     boss.x = INITIAL_STATE.boss.x;
     boss.y = height - boss.size
     boss.speed = INITIAL_STATE.boss.speed;
@@ -524,15 +540,15 @@ function resetGame() {
     game.delayTime = INITIAL_STATE.game.delayTime;
     game.speedIncreaseInterval = INITIAL_STATE.game.speedIncreaseInterval;
 
-    // Reset final challenge related states
+    // Reset final challenge stuff
     finalChallengeInitiated = false;
     finalObstacle = null;
     finalChallengeTimer = 0;
 
-    // Reset frame count (if using p5.js)
+    // Reset frame count
     frameCount = 0;
 
-    // Reset background lines
+    // Reinitialize background lines
     initializeBackgroundLines();
 
     // Remove any existing UI elements

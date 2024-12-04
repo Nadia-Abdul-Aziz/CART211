@@ -1,40 +1,45 @@
-let lineLength;
-let growing = true;
+//attempt at creating a up and down animation for the homescreen, dead code
+//UNUSED CODE!!!
 
-function setup() {
-    const canvas = createCanvas(windowWidth, windowHeight);
-    canvas.position(0, 0);
-    canvas.style('pointer-events', 'none'); // Prevent interaction
-    lineLength = 50; // Initial line length
 
-    // Wait for the image to load before accessing its dimensions
-    const spiderImage = document.getElementById('spiderImage');
-    spiderImage.onload = drawSpiderLine;
-}
 
-function drawSpiderLine() {
-    const spiderImage = document.getElementById('spiderImage');
-    if (!spiderImage) return; // Handle case where image is not found
 
-    const rect = spiderImage.getBoundingClientRect();
-    const anchorX = rect.right - rect.width / 2;
-    const anchorY = rect.top;
+//let lineLength;
+// let growing = true;
 
-    clear(); // Clear canvas to avoid trails
-    stroke(255);
-    strokeWeight(2);
-    line(anchorX, anchorY, anchorX, anchorY + lineLength);
+// function setup() {
+//     const canvas = createCanvas(windowWidth, windowHeight);
+//     canvas.position(0, 0);
+//     canvas.style('pointer-events', 'none'); // Prevent interaction
+//     lineLength = 50; // Initial line length
 
-    // Animate the line
-    if (growing) {
-        lineLength += 2;
-        if (lineLength > 150) growing = false;
-    } else {
-        lineLength -= 2;
-        if (lineLength < 50) growing = true;
-    }
-}
+//     // Wait for the image to load before accessing its dimensions
+//     const spiderImage = document.getElementById('spiderImage');
+//     spiderImage.onload = drawSpiderLine;
+// }
 
-function draw() {
-    //This function is now empty, as the drawing is handled by drawSpiderLine after the image loads.
-}
+// function drawSpiderLine() {
+//     const spiderImage = document.getElementById('spiderImage');
+//     if (!spiderImage) return; // Handle case where image is not found
+
+//     const rect = spiderImage.getBoundingClientRect();
+//     const anchorX = rect.right - rect.width / 2;
+//     const anchorY = rect.top;
+
+//     clear(); // Clear canvas to avoid trails
+//     stroke(255);
+//     strokeWeight(2);
+//     line(anchorX, anchorY, anchorX, anchorY + lineLength);
+
+//     // Animate the line
+//     if (growing) {
+//         lineLength += 2;
+//         if (lineLength > 150) growing = false;
+//     } else {
+//         lineLength -= 2;
+//         if (lineLength < 50) growing = true;
+//     }
+// }
+
+// function draw() {
+// }

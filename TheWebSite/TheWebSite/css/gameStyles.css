@@ -1,0 +1,19 @@
+/* Styles from bossChase.html */
+body {
+    background-color: black;
+    color: white;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    font-family: 'Courier New', monospace;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.home-icon {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+}

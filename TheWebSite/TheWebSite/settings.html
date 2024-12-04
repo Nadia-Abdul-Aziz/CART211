@@ -151,16 +151,21 @@
 </head>
 
 <body>
+    <!-- Background overlay with web image -->
     <div class="background-overlay"></div>
 
+    <!-- Home icon link -->
     <a href="index.html" class="home-icon">
         <img src="assets/images/homeIcon.png" width="65" height="65" alt="Home">
     </a>
 
+    <!-- Main content container -->
     <div class="full-screen">
         <div class="container">
             <h1>Text Settings</h1>
+            <!-- Form for setting speeds -->
             <form id="speedForm">
+                <!-- Forward speed setting -->
                 <div class="form-group">
                     <div class="speed-label">
                         <label for="forSpeed">Forward Speed</label>
@@ -169,6 +174,7 @@
                     <input type="range" class="form-control-range" id="forSpeed" min="50" max="150" step="10"
                         value="100">
                 </div>
+                <!-- Back speed setting -->
                 <div class="form-group">
                     <div class="speed-label">
                         <label for="bSpeed">Back Speed</label>
@@ -176,9 +182,11 @@
                     </div>
                     <input type="range" class="form-control-range" id="bSpeed" min="50" max="150" step="10" value="100">
                 </div>
+                <!-- Save button -->
                 <button type="submit" class="btn btn-primary btn-block w-100 mt-3">Save Settings</button>
             </form>
 
+            <!-- Save status message -->
             <div id="saveStatus" class="alert mt-3" style="display: none;">
                 Settings saved successfully!
             </div>
@@ -192,6 +200,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
 
     <script>
+        //CLAUDE MY LORD AND SAVIOUR
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBVC0nnE-5-9yDksKbX1tp03l_Pqxz60ZI",

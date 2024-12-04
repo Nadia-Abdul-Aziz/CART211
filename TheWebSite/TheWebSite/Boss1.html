@@ -4,62 +4,16 @@
 <head>
     <title>Not Enough</title>
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-    <style>
-        body {
-            background-color: black;
-            font-family: 'Courier New', monospace;
-            color: white;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .full-screen {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #initial-text {
-            font-size: 30px;
-            text-align: center;
-        }
-
-        .home-icon {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        #next-button {
-            margin-top: 20px;
-            display: none;
-        }
-
-        #next-button a {
-            color: white;
-            text-decoration: none;
-            border: 1px solid white;
-            padding: 10px 20px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        #next-button a:hover {
-            background-color: white;
-            color: black;
-        }
-    </style>
+    <link rel="stylesheet" href="css/global.css">
 </head>
 
 <body>
+    <!--making the home icon-->
     <a href="index.html" class="home-icon">
         <img src="assets/images/homeIcon.png" width="65" height="65" alt="Home">
     </a>
 
+    <!--next page-->
     <div class="full-screen">
         <div id="initial-text"></div>
         <div id="next-button">
@@ -68,23 +22,25 @@
     </div>
 
     <script>
+        //Typing animation!!
+        //Don't actually need a dom, but it's there just in case anyway
         document.addEventListener('DOMContentLoaded', function () {
             const firstText = new Typed('#initial-text', {
                 strings: ['Thanks to you, Houston has had a huge meal...', ""],
-                typeSpeed: 50,
+                typeSpeed: 30, //hardcoded typespeed (pretty fast, only the first page is linked to firebase as a proof of concept)
                 backSpeed: 30,
-                showCursor: false,
-                onComplete: function () {
+                showCursor: false, //getting rid of ugly cursos
+                onComplete: function () { //when done, type this
                     setTimeout(() => {
                         new Typed('#initial-text', {
                             strings: ['...yet it was merely a snack'],
-                            typeSpeed: 50,
+                            typeSpeed: 30,
                             showCursor: false,
-                            onComplete: function () {
+                            onComplete: function () { //when done show button
                                 document.getElementById('next-button').style.display = 'block';
                             }
                         });
-                    }, 500);
+                    }, 500); //delay
                 }
             });
         });
