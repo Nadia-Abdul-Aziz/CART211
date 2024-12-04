@@ -1,12 +1,12 @@
 /**
- * SpiderSpiderSpider
+ * THE DUEL - WITH BOT
  * 
  * Nadia Abdul Aziz
  * 
  * A multiplayer game where you collect power to eat bugs, then get bigger than your opponent to eventually eat them. 
  * Based on the original code of FrogFrogFrog, and inspired by my website being created for CART211
  * 
- * Instructions & explanation (SEE IDEA DOCUMENT FOR MORE DETAILS):
+ * Instructions & explanation
  * - Each player begins with 2 default power tokens
  * - Tokens are used to power the spider's web, the more tokens you have, the farther your web will go.
  * - Collect yellow power tokens with your web

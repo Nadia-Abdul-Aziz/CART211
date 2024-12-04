@@ -1,5 +1,5 @@
 /**
- * SpiderSpiderSpider
+ * Duel - MULTIPLAYER
  * 
  * Nadia Abdul Aziz
  * 

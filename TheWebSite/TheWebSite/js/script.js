@@ -68,6 +68,7 @@ const mine = {
     collisionRadius: 30
 };
 
+//Load images
 function preload() {
     bugImg = loadImage('assets/images/Bug.png');
     houstonImg = loadImage('assets/images/homeIcon.png');
@@ -83,6 +84,7 @@ function setup() {
 
 }
 
+//Contains the switch statement for all states
 function draw() {
     background("black");
     drawBorder();
@@ -90,14 +92,14 @@ function draw() {
     switch (gameState) {
         case GAME_PLAYING:
             moveBug();
-            moveMine(); // New: Move the mine
+            moveMine();
             drawBug();
-            drawMine(); // New: Draw the mine
+            drawMine();
             moveSpider();
             moveWeb();
             drawSpider();
             checkWebBugOverlap();
-            checkWebMineOverlap(); // New: Check for web-mine collision
+            checkWebMineOverlap();
             checkLoss();
             break;
         case GAME_OVER:
@@ -116,16 +118,17 @@ function draw() {
     }
 }
 
+//That white square 
 function drawBorder() {
     push();
     noFill();
-    stroke(255); // Grey color
-    strokeWeight(5); // Border thickness
+    stroke(255);
+    strokeWeight(5);
     rect(0, 0, width, height);
     pop();
 }
 
-// New: Mine-related functions
+// mine movement
 function moveMine() {
     mine.x += mine.speed;
     if (mine.x > width) {
@@ -133,11 +136,13 @@ function moveMine() {
     }
 }
 
+//Image for the mine
 function drawMine() {
     imageMode(CENTER);
     image(mineImg, mine.x, mine.y, mine.size * 2, mine.size * 2);
 }
 
+//starting point of any given new mine
 function resetMine() {
     mine.x = 0;
     mine.y = random(0, 300);
@@ -147,17 +152,16 @@ function checkWebMineOverlap() {
     // Calculate the distance between the web and the mine
     const distance = dist(spider.web.x, spider.web.y, mine.x, mine.y);
 
-    // Define a collision threshold (adjust as needed)
+    // Defining a collision threshold
     const collisionThreshold = (spider.web.size + mine.collisionRadius) / 2;
 
-    // Check if the distance is less than the collision threshold
+    // Check if the distance is less than the collision threshold, if yes, trigger the ganme over state
     if (distance < collisionThreshold) {
-        console.log("Mine collision detected! Changing game state to GAME_OVER");
         gameState = GAME_OVER;
     }
 }
 
-// Existing functions (unchanged)
+// Move the bugs across the screen
 function moveBug() {
     bug.x += bug.speed;
     bug.y += random(-10, 10);
@@ -165,10 +169,13 @@ function moveBug() {
     bug.y = constrain(bug.y, startY - bug.yRange, startY + bug.yRange);
 }
 
+//image
 function drawBug() {
     image(bugImg, bug.x, bug.y, bug.size, bug.size);
 }
 
+//Once you reach a certain speed, trigger the boss fight stream
+//starting point of any given new bug
 function resetBug() {
     if (bug.speed >= 7) {
         gameState = BOSS_FIGHT;
@@ -178,6 +185,7 @@ function resetBug() {
     bug.speed += 0.5;
 }
 
+//Press keys to move
 function moveSpider() {
     if (keyIsDown(LEFT_ARROW)) {
         spider.body.x -= spider.body.speed;
@@ -188,10 +196,10 @@ function moveSpider() {
     spider.body.x = constrain(spider.body.x, 0, width);
 }
 
+//Determining web states
 function moveWeb() {
     spider.web.x = spider.body.x;
     if (spider.web.state === "idle") {
-        // Do nothing
     } else if (spider.web.state === "outbound") {
         spider.web.y += -spider.web.speed;
         if (spider.web.y <= 0) {
@@ -205,12 +213,14 @@ function moveWeb() {
     }
 }
 
+//Position of the web when the player restarts the game
 function resetWeb() {
     spider.web.x = spider.body.x;
     spider.web.y = spider.body.y;
     spider.web.state = "idle";
 }
 
+//The actual image for houston, the line for his web and the image for the web
 function drawSpider() {
     push();
     stroke("white");
@@ -229,6 +239,7 @@ function drawSpider() {
     pop();
 }
 
+//if the bug is within the bounds of the web, the bug is caught and set the web to inbound
 function checkWebBugOverlap() {
     const d = dist(spider.web.x, spider.web.y, bug.x, bug.y);
     const caught = (d < spider.web.size / 2 + bug.size / 2);
@@ -238,6 +249,7 @@ function checkWebBugOverlap() {
     }
 }
 
+//To shoot the web
 function keyPressed() {
     if (keyCode === 32) { // 32 is the keyCode for spacebar
         if (gameState === GAME_PLAYING && spider.web.state === "idle") {
@@ -248,12 +260,14 @@ function keyPressed() {
     }
 }
 
+//If a bug escapes, automatically trigger a game over
 function checkLoss() {
     if (bug.x >= width) {
         gameState = GAME_OVER;
     }
 }
 
+//Ending screens
 function initializeGameOver() {
     let gameOverElement = createDiv('');
     gameOverElement.position(0, 0);
@@ -285,6 +299,7 @@ function initializeGameOver() {
     restartPrompt.style('font-size', '20px');
     restartPrompt.style('margin-top', '20px');
 
+    //TYPED JS!!
     new Typed(gameOverTitle.elt, {
         strings: ['GAME OVER'],
         typeSpeed: 40,
@@ -344,7 +359,7 @@ function initializeGameWon() {
     playAgainButton.style('padding', '10px 20px');
     playAgainButton.style('cursor', 'pointer');
     playAgainButton.mousePressed(() => {
-        window.location.href = 'Boss1.html'; // Load the boss fight HTML file
+        window.location.href = 'Boss1.html'; // Load the boss HTML file
     });
 
     new Typed(gameWonTitle.elt, {
@@ -379,6 +394,6 @@ function resetGame() {
     gameState = GAME_PLAYING;
     bug.speed = 1;
     resetBug();
-    resetMine(); // New: Reset mine position when restarting the game
+    resetMine();
     reserWeb();
 }

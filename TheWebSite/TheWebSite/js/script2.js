@@ -69,41 +69,50 @@ let mine = {
     collisionRadius: 20
 };
 
+// Preload game assets before the game starts
 function preload() {
     houstonImg = loadImage('assets/images/homeIcon.png');
     bugzillaImg = loadImage('assets/images/Boss.png');
     mineImg = loadImage('assets/images/mine.png');
 }
 
+// Initial game setup
 function setup() {
     createCanvas(640, 480);
     initializePositions();
     spawnMine();
 }
 
+// Set initial positions for Houston and Bugzilla
 function initializePositions() {
+    // Position Houston at the bottom center of the screen
     houston.body.x = width / 2;
     houston.body.y = height - 10;
 
+    // Position Bugzilla at the top center of the screen
     bugzilla.body.x = width / 2;
     bugzilla.body.y = 100;
 }
 
+// Main game loop
 function draw() {
     background(0);
     drawBorder();
 
+    //statement for all game states
     switch (gameState) {
         case GAME_PLAYING:
             updateGame();
             break;
         case GAME_OVER:
+            //display game over screen
             if (!gameOverInitialized) {
                 initializeGameOver();
                 gameOverInitialized = true;
             }
             break;
         case GAME_WON:
+            //display game won screen
             if (!gameWonInitialized) {
                 initializeGameWon();
                 gameWonInitialized = true;
@@ -112,6 +121,7 @@ function draw() {
     }
 }
 
+// Draw a white border around the game area
 function drawBorder() {
     push();
     noFill();
@@ -121,6 +131,7 @@ function drawBorder() {
     pop();
 }
 
+// Update game logic during  gameplay
 function updateGame() {
     moveHouston();
     updateBullets();
@@ -130,67 +141,78 @@ function updateGame() {
     checkGameStatus();
 }
 
+// Handle player movement
 function moveHouston() {
+    // Move left when left arrow is pressed
     if (keyIsDown(LEFT_ARROW)) houston.body.x -= houston.body.speed;
+    // Move right when right arrow is pressed
     if (keyIsDown(RIGHT_ARROW)) houston.body.x += houston.body.speed;
+
+    // Constrain so houston doesn't go off the borders
     houston.body.x = constrain(houston.body.x, houston.body.size / 2, width - houston.body.size / 2);
 }
 
+//bullet mechanics
+//CLAUDE USED FOR LOGIC HELP!!!
 function updateBullets() {
-    // Update player bullets
     for (let i = playerBullets.length - 1; i >= 0; i--) {
-        playerBullets[i].y -= 20;
+        playerBullets[i].y -= 20; // Move bullets upward
 
         // Check collision with boss
         if (dist(playerBullets[i].x, playerBullets[i].y, bugzilla.body.x, bugzilla.body.y) < bugzilla.body.size / 2) {
-            bossHealth -= 5;
-            playerBullets.splice(i, 1);
+            bossHealth -= 5;  // Reduce boss health
+            playerBullets.splice(i, 1); // Remove bullet????? I think
             continue;
         }
 
-        // Remove off-screen bullets
+        // Remove bullets that have gone off 
+        screen
         if (playerBullets[i].y < 0) {
             playerBullets.splice(i, 1);
         }
     }
 
     // Boss shooting logic
-    if (random() < 0.03) {
+    // CLAUDE USED
+    if (random() < 0.03) { //likelihood to shoot
+        // Randomly generate boss bullets within boss's width
         let bulletX = random(bugzilla.body.x - bugzilla.body.size / 6, bugzilla.body.x + bugzilla.body.size / 6);
         bossBullets.push({ x: bulletX, y: bugzilla.body.y + bugzilla.body.size / 4 });
     }
 
-    // Update boss bullets
     for (let i = bossBullets.length - 1; i >= 0; i--) {
-        bossBullets[i].y += 7;
+        bossBullets[i].y += 7; // Move bullets downward
 
-        // Check collision with player
+        // Check collision with houston
         if (dist(bossBullets[i].x, bossBullets[i].y, houston.body.x, houston.body.y) < houston.body.size / 2) {
             playerHealth -= 10;
             bossBullets.splice(i, 1);
             continue;
         }
 
-        // Remove off-screen bullets
         if (bossBullets[i].y > height) {
             bossBullets.splice(i, 1);
         }
     }
 }
 
+//mine mechanics
 function updateMine() {
-    mine.y += mine.speed;
+    mine.y += mine.speed; // Move mine downward
+
+    // Respawn mine if it goes off screen
     if (mine.y > height) {
         spawnMine();
     }
 
-    // Check mine collision with player
+    // Check mine collision with houston
     const distance = dist(mine.x, mine.y, houston.body.x, houston.body.y);
     if (distance < mine.collisionRadius + houston.body.size / 2) {
-        gameState = GAME_OVER;
+        gameState = GAME_OVER; // if houston touches the mine = game over
     }
 }
 
+// Draw all game assets
 function drawEntities() {
     // Draw Houston
     push();
@@ -208,11 +230,13 @@ function drawEntities() {
     image(bugzillaImg, 0, 30, bugzilla.body.size, bugzilla.body.size);
     pop();
 
-    // Draw bullets
+    // Draw player bullets
     fill(255);
     playerBullets.forEach(bullet => {
         ellipse(bullet.x, bullet.y, 8, 8);
     });
+
+    // Draw boss bullets
     bossBullets.forEach(bullet => {
         ellipse(bullet.x, bullet.y, 8, 8);
     });
@@ -226,12 +250,13 @@ function drawEntities() {
     // Draw health bars
     drawHealthBars();
 
-    // Draw reload indicator if needed
+    // Draw reload indicator if reloading
     if (isReloading) {
         drawReloadIndicator();
     }
 }
 
+// Draw health bars for player and boss
 function drawHealthBars() {
     push();
     textFont('Courier New');
@@ -247,6 +272,8 @@ function drawHealthBars() {
     noStroke();
     rect(21, 21, 14, 118);
     fill(255);
+    // Map boss health to bar height
+    //CLAUDE USED FOR LOGIC HELP!!
     rect(21, 21 + map(bossHealth, 100, 0, 0, 118), 14, map(bossHealth, 0, 100, 0, 118));
     text(bossHealth, 28, 145);
 
@@ -264,23 +291,30 @@ function drawHealthBars() {
     pop();
 }
 
+// Draw reload indicator when weapon is reloading
 function drawReloadIndicator() {
     push();
     noFill();
     strokeWeight(3);
     let startAngle = -PI / 2;
+    // Map reload progress to an arc
     let endAngle = map(reloadProgress, 0, 100, -PI / 2, -PI / 2 + TWO_PI);
     let indicatorSize = 30;
 
     stroke(0, 0, 0);
+    // Draw reload progress arc
     arc(houston.body.x, houston.body.y, indicatorSize, indicatorSize, startAngle, endAngle);
     pop();
 }
 
+// Manage reload system for player's weapon
 function updateReloadSystem() {
     if (isReloading) {
         const currentTime = millis();
+        // Calculate reload progress
         reloadProgress = map(currentTime - lastShotTime, 0, SHOT_COOLDOWN, 0, 100);
+
+        // Reset reload state when cooldown is done
         if (currentTime - lastShotTime >= SHOT_COOLDOWN) {
             isReloading = false;
             reloadProgress = 0;
@@ -288,37 +322,46 @@ function updateReloadSystem() {
     }
 }
 
+// Spawn a new mine at a random horizontal position
 function spawnMine() {
     mine.x = random(width);
     mine.y = 0;
     mine.speed = random(4, 8);
 }
 
+// Check for won or lost
 function checkGameStatus() {
     if (playerHealth <= 0) {
-        gameState = GAME_OVER;
+        gameState = GAME_OVER;  // Player loses if health reaches 0
     } else if (bossHealth <= 0) {
-        gameState = GAME_WON;
+        gameState = GAME_WON;   // Player wins if boss health reaches 0
     }
 }
 
+// Handle key press events
 function keyPressed() {
     if (key === ' ') {
         if (gameState === GAME_PLAYING) {
             const currentTime = millis();
+            // Check if can shoot (not reloading and cooldown passed)
             if (!isReloading && currentTime - lastShotTime >= SHOT_COOLDOWN) {
+                // Create bullet at player's position
                 playerBullets.push({ x: houston.body.x, y: houston.body.y - houston.body.size / 2 });
                 lastShotTime = currentTime;
                 isReloading = true;
                 reloadProgress = 0;
             }
         } else if (gameState === GAME_OVER) {
+            // Restart game if spacebar pressed during game over
             resetGame();
         }
     }
 }
 
+// Initialize game over screen with typed text effects
+//copied and pasted from previous documents
 function initializeGameOver() {
+    // Create div for game over screen
     let gameOverElement = createDiv('');
     gameOverElement.position(0, 0);
     gameOverElement.style('width', '100%');
@@ -334,21 +377,25 @@ function initializeGameOver() {
     gameOverElement.style('top', '0');
     gameOverElement.style('left', '0');
 
+    // Create title element
     let gameOverTitle = createDiv('');
     gameOverTitle.parent(gameOverElement);
     gameOverTitle.style('font-size', '40px');
     gameOverTitle.style('margin-bottom', '20px');
 
+    // Create text description element
     let typedElement = createDiv('');
     typedElement.parent(gameOverElement);
     typedElement.style('width', '300px');
     typedElement.style('font-size', '16px');
 
+    // Create restart prompt
     let restartPrompt = createDiv('');
     restartPrompt.parent(gameOverElement);
     restartPrompt.style('font-size', '20px');
     restartPrompt.style('margin-top', '20px');
 
+    //animation using previously created divs
     new Typed(gameOverTitle.elt, {
         strings: ['GAME OVER'],
         typeSpeed: 40,
@@ -380,6 +427,7 @@ function initializeGameOver() {
     });
 }
 
+//Similar to previous game lost
 function initializeGameWon() {
     let gameWonElement = createDiv('');
     gameWonElement.position(0, 0);
@@ -396,6 +444,7 @@ function initializeGameWon() {
     gameWonElement.style('top', '0');
     gameWonElement.style('left', '0');
 
+    //Flashing animation for ending screen
     let style = createElement('style');
     style.html(`
         @keyframes flash {
@@ -408,7 +457,6 @@ function initializeGameWon() {
             font-size: 30px;
         }
     `);
-
     let gameWonTitle = createDiv('WINNER WINNER BUG DINNER!');
     gameWonTitle.parent(gameWonElement);
     gameWonTitle.class('flash-text');
@@ -421,10 +469,11 @@ function initializeGameWon() {
     continueButton.style('padding', '10px 20px');
     continueButton.style('cursor', 'pointer');
     continueButton.mousePressed(() => {
-        window.location.href = 'Winner.html';
+        window.location.href = 'Winner.html'; //link to the winnign stream
     });
 }
 
+//runs when the player starts the game for the second time
 function resetGame() {
     removeElements();
     initializePositions();

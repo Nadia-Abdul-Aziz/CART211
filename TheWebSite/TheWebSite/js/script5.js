@@ -1,3 +1,15 @@
+
+/**
+ * Houston's Chase
+ * 
+ * Run away from the bug boss
+ * 
+ * Made with p5.js
+ * https://p5js.org/
+ */
+
+
+
 //Game states
 const GAME_PLAYING = 'playing';
 const GAME_OVER = 'game over';

@@ -1,4 +1,14 @@
-// import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+//UNUSED CODE
+//I PUT EVERYTING IN THE ACTUAL SETTINGS PAGE!!!!!!!!
+
+
+
+
+
+
+
+
+//import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 // import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 // import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 // import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
