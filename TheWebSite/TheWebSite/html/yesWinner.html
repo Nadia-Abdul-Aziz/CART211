@@ -5,7 +5,6 @@
     <title>WINNER</title>
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <!-- Stylesheet for the page, again, very similar to the rest -->
     <style>
         body {
             background-color: black;
@@ -14,6 +13,32 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
+        }
+
+        /* Background overlay styles */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/images/web.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            animation: fadeIn 5s ease-in forwards;
+            z-index: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 0.5;
+            }
         }
 
         .full-screen {
@@ -27,6 +52,7 @@
             top: 0;
             left: 0;
             transition: opacity 1s ease-in-out;
+            z-index: 2;
         }
 
         #initial-screen {
@@ -77,7 +103,6 @@
             border: 1px solid white;
             padding: 10px 20px;
             width: 160px;
-            /* Fixed width for buttons */
             text-align: center;
             transition: background-color 0.3s, color 0.3s;
             box-sizing: border-box;
@@ -87,6 +112,7 @@
             background-color: white;
             color: black;
         }
+
         .moving-link {
             position: absolute;
             cursor: pointer;
@@ -96,26 +122,23 @@
 </head>
 
 <body>
-    <!-- Initial screen with animated text -->
+    <!-- Background overlay div -->
+    <div class="background-overlay"></div>
+
     <div id="initial-screen" class="full-screen">
         <div id="initial-text"></div>
     </div>
-    <!-- Completion screen with buttons -->
+
     <div id="completion-screen" class="full-screen">
         <div id="completion-text">Episode Completed</div>
         <div id="buttons-container">
-            <!-- Button to play again -->
-            <a href="Bug1.html" class="button">Play Again</a>
-            <!-- Catch text -->
+            <a href="html/Bug1.html" class="button">Play Again</a>
             <div id="catch-text">Catch Houston<br>to go home!</div>
-            <!-- Button to go to the next episode -->
-            <a href="underConstruction.html" class="button">Next Episode</a>
+            <a href="html/underConstruction.html" class="button">Next Episode</a>
         </div>
     </div>
 
-    <!--escaping home icon-->
     <script>
-
         let sprite = {
             x: 20,
             y: 20,
@@ -126,15 +149,13 @@
             speedChange: 0.8
         };
 
-        // Image variable
         let img;
-        // Moving link element
         let movingLink;
 
-        // Preload the home icon image
         function preload() {
-            img = loadImage('assets/images/homeIcon.png');
+            img = loadImage('../assets/images/homeIcon.png');
         }
+
         function setup() {
             let canvas = createCanvas(windowWidth, windowHeight);
             canvas.style('position', 'fixed');
@@ -142,17 +163,14 @@
             canvas.style('left', '0');
             canvas.style('z-index', '-1');
 
-            // Create a link element for the home icon
             movingLink = createA('index.html', '');
             movingLink.class('moving-link');
             movingLink.style('width', sprite.size + 'px');
             movingLink.style('height', sprite.size + 'px');
 
-            // Initialize sprite speed
             sprite.xSpeed = random(-3, 3);
             sprite.ySpeed = random(-3, 3);
 
-            // Clear the canvas and stop the loop 
             clear();
             noLoop();
         }
@@ -160,19 +178,15 @@
         function draw() {
             background(0);
 
-            // Update houston position
             sprite.x += sprite.xSpeed;
             sprite.y += sprite.ySpeed;
 
-            // Add random changes to speed
             sprite.xSpeed += random(-sprite.speedChange, sprite.speedChange);
             sprite.ySpeed += random(-sprite.speedChange, sprite.speedChange);
 
-            // Constrain sprite speed to not go crazy
             sprite.xSpeed = constrain(sprite.xSpeed, -sprite.speedLimit, sprite.speedLimit);
             sprite.ySpeed = constrain(sprite.ySpeed, -sprite.speedLimit, sprite.speedLimit);
 
-            // Reverse x and y direction if sprite hits the edges
             if (sprite.x + sprite.size >= width || sprite.x <= 0) {
                 sprite.xSpeed *= -1;
                 sprite.xSpeed += random(-2, 2);
@@ -185,29 +199,26 @@
                 sprite.y = constrain(sprite.y, 0, height - sprite.size);
             }
 
-            // Set the link position and display the image
             movingLink.position(sprite.x, sprite.y);
             image(img, sprite.x, sprite.y, sprite.size, sprite.size);
         }
 
-        // Function to resize the canvas when the window is resized, page wasn't scaling properly on my smaller device
         function windowResized() {
             resizeCanvas(windowWidth, windowHeight);
         }
 
-        //Similar to all other typed instances
         document.addEventListener('DOMContentLoaded', function () {
             const firstText = new Typed('#initial-text', {
-                strings: ["With a swift flick of his silk...", "...Houston devours the giant", ""],
-                typeSpeed: 50,
+                strings: ["With a swift flick of his silk...", "...Houston defeats the giant", ""],
+                typeSpeed: 30,
                 backSpeed: 30,
                 showCursor: false,
                 onComplete: function () {
                     setTimeout(() => {
                         const initialTextElement = document.getElementById('initial-text');
                         new Typed('#initial-text', {
-                            strings: ['His hunger finally quenched, yet adventure always calls again'],
-                            typeSpeed: 50,
+                            strings: ['Even with danger resolved, adventure always calls again'],
+                            typeSpeed: 30,
                             backSpeed: 30,
                             showCursor: false,
                             onComplete: function () {
@@ -217,10 +228,15 @@
                                     setTimeout(() => {
                                         const initialScreen = document.getElementById('initial-screen');
                                         const completionScreen = document.getElementById('completion-screen');
+                                        const backgroundOverlay = document.querySelector('.background-overlay');
 
                                         initialScreen.style.opacity = '0';
                                         completionScreen.style.opacity = '1';
                                         completionScreen.style.pointerEvents = 'auto';
+
+                                        // Hide the background overlay
+                                        backgroundOverlay.style.opacity = '0';
+                                        backgroundOverlay.style.visibility = 'hidden';
 
                                         setTimeout(() => {
                                             loop();
